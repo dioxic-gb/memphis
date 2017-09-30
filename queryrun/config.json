@@ -1,0 +1,12 @@
+{
+  "mongoUri": "127.0.0.1/comfone",
+  "database": "comfone",
+  "collection": "batch",
+  "iterations": 1,
+  "batchSize": 1000,
+  "threads": 2,
+  "sampleSize": 10,
+  "placeholderFile": "etdrs-placeholders.json",
+  "hashSuffix": "Hash",
+  "epochSuffix": "Epoc"
+}

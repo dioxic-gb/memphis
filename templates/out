@@ -1,0 +1,233 @@
+{
+   "nonpublicExecutionReport" : {
+      "trade" : {
+         "tradeHeader" : {
+            "tradeDate" : {
+               "_text" : "2011-02-04"
+            },
+            "partyTradeIdentifier" : {
+               "issuer" : {
+                  "@issuerIdScheme" : "http://www.fpml.org/coding-scheme/external/cftc/issuer-identifier",
+                  "_text" : "${trade.issuer}"
+               },
+               "tradeId" : {
+                  "_text" : "${trade.tradeId}",
+                  "@tradeIdScheme" : "http://www.fpml.org/coding-scheme/external/unique-transaction-identifier"
+               }
+            },
+            "partyTradeInformation" : {
+               "largeSizeTrade" : {
+                  "_text" : false
+               },
+               "offMarketPrice" : {
+                  "_text" : false
+               },
+               "confirmationMethod" : {
+                  "_text" : "NonElectronic"
+               },
+               "intentToClear" : {
+                  "_text" : false
+               },
+               "executionType" : {
+                  "_text" : "Electronic"
+               },
+               "executionVenueType" : {
+                  "_text" : "OffFacility"
+               },
+               "executionDateTime" : {
+                  "_text" : "2011-02-04T15:38:00Z"
+               },
+               "nonStandardTerms" : {
+                  "_text" : true
+               },
+               "partyReference" : {
+                  "@href" : "party1"
+               }
+            }
+         },
+         "documentation" : {
+            "attachment" : {
+               "resourceId" : {
+                  "@resourceIdScheme" : "http://abc.com/ext/confos",
+                  "_text" : 123
+               },
+               "language" : {
+                  "@languageScheme" : "http://www.fpml.org/coding-scheme/external/ISO-639-2T",
+                  "_text" : "eng"
+               },
+               "base64Binary" : {
+                  "_text" : "VGhpcyBpcyBhIGRlbW9uc3RyYXRpb24gb2YgQmFzZTY0IGVuY29kaW5n"
+               },
+               "resourceType" : {
+                  "_text" : "Confirmation"
+               },
+               "mimeType" : {
+                  "_text" : "application/pdf"
+               }
+            }
+         },
+         "genericProduct" : {
+            "terminationDate" : {
+               "unadjustedDate" : {
+                  "_text" : "${trade.businessDate2}"
+               }
+            },
+            "counterpartyReference" : [
+               {
+                  "@href" : "party1"
+               },
+               {
+                  "@href" : "party2"
+               }
+            ],
+            "premium" : {
+               "receiverPartyReference" : {
+                  "@href" : "party2"
+               },
+               "paymentAmount" : {
+                  "currency" : {
+                     "_text" : "USD"
+                  },
+                  "amount" : {
+                     "_text" : "${trade.price}"
+                  }
+               },
+               "payerPartyReference" : {
+                  "@href" : "party1"
+               }
+            },
+            "effectiveDate" : {
+               "unadjustedDate" : {
+                  "_text" : "${trade.businessDate1}"
+               }
+            },
+            "numberOfOptions" : {
+               "_text" : 1000
+            },
+            "embeddedOptionType" : {
+               "_text" : "OptionalEarlyTerminationProvision"
+            },
+            "productType" : {
+               "@productTypeScheme" : "http://www.fpml.org/coding-scheme/product-taxonomy",
+               "_text" : "Equity:Option:PriceReturnBasicPerformance:SingleName"
+            },
+            "optionType" : {
+               "_text" : "Straddle"
+            },
+            "primaryAssetClass" : {
+               "_text" : "${trade.assetClass}"
+            },
+            "expirationDate" : {
+               "unadjustedDate" : {
+                  "_text" : "${trade.businessDate1}"
+               }
+            },
+            "optionEntitlement" : {
+               "_text" : 100
+            },
+            "underlyer" : [
+               {
+                  "@id" : "stock1",
+                  "equity" : {
+                     "description" : {
+                        "_text" : "STMicroelectronics N.V. ordinary shares"
+                     },
+                     "instrumentId" : {
+                        "@instrumentIdScheme" : "http://www.fpml.org/coding-scheme/external/instrument-id-bloomberg",
+                        "_text" : "${trade.productId}"
+                     },
+                     "exchangeId" : {
+                        "@exchangeIdScheme" : "http://www.fpml.org/coding-scheme/external/iso10383",
+                        "_text" : "XLON"
+                     }
+                  }
+               },
+               {
+                  "@id" : "stock2",
+                  "equity" : {
+                     "description" : {
+                        "_text" : "Ahold"
+                     },
+                     "instrumentId" : {
+                        "_text" : "AHLD.NA",
+                        "@instrumentIdScheme" : "http://www.fpml.org/coding-scheme/external/instrument-id-bloomberg"
+                     },
+                     "exchangeId" : {
+                        "@exchangeIdScheme" : "http://www.fpml.org/coding-scheme/external/iso10383",
+                        "_text" : "XASE"
+                     }
+                  }
+               }
+            ],
+            "notional" : {
+               "currency" : {
+                  "_text" : "USD"
+               },
+               "amount" : {
+                  "_text" : "${trade.price}"
+               }
+            },
+            "settlementCurrency" : {
+               "_text" : "EUR"
+            }
+         }
+      },
+      "correlationId" : {
+         "_text" : "${trade.correlationId}",
+         "@correlationIdScheme" : "http://sef.com/trade-id"
+      },
+      "sequenceNumber" : {
+         "_text" : 1
+      },
+      "originatingEvent" : {
+         "_text" : "Trade"
+      },
+      "isCorrection" : {
+         "_text" : false
+      },
+      "party" : [
+         {
+            "partyId" : {
+               "_text" : "${party1.partyId}",
+               "@partyIdScheme" : "http://www.fpml.org/coding-scheme/external/cftc/interim-compliant-identifier"
+            },
+            "@id" : "party1"
+         },
+         {
+            "partyId" : {
+               "_text" : "${party2.partyId}",
+               "@partyIdScheme" : "http://www.fpml.org/coding-scheme/external/cftc/interim-compliant-identifier"
+            },
+            "@id" : "party2"
+         }
+      ],
+      "@schemaLocation" : "http://www.fpml.org/FpML-5/recordkeeping ../fpml-main-5-5.xsd http://www.w3.org/2000/09/xmldsig# ../xmldsig-core-schema.xsd",
+      "header" : {
+         "sentBy" : {
+            "_text" : "BANKX"
+         },
+         "sendTo" : {
+            "_text" : "SDR01"
+         },
+         "creationTimestamp" : {
+            "_text" : "${trade.creationTimestamp}"
+         },
+         "messageId" : {
+            "_text" : "${msgId}",
+            "@messageIdScheme" : "http://www.bankx.com/msg_id"
+         }
+      },
+      "quote" : {
+         "measureType" : {
+            "_text" : "Premium"
+         },
+         "currency" : {
+            "_text" : "USD"
+         },
+         "value" : {
+            "_text" : "${trade.price}"
+         }
+      },
+      "@fpmlVersion" : "5-5"
+   }
+}

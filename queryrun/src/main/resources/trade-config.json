@@ -1,0 +1,16 @@
+{
+  // mongodb://[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]][/[database][?options]]
+  mongoUri: "127.0.0.1/sample",
+  database: "sample",
+  collection: "tweets",
+  iterations: 5,
+  queries: [
+  	"{ 'metadata.assetClass' : { '$in': [ 'ForeignExchange', 'InterestRate' ] } }",
+  	"{ 'index.assetClass' : 'ForeignExchange' }",
+  	"{ 'metadata.businessDate1' : { '$gt' : '2018-01-01T00:00:00.000Z', '$lt': '2018-12-31T00:00:00.000Z'} }",
+  	"{ 'index.businessDate1' : { '$gt' : '2018-01-01T00:00:00.000Z', '$lt': '2018-12-31T00:00:00.000Z'} }",
+  	"{ 'metadata.price' : { '$gt' : 200000, '$lt': 400000} }",
+  	"{ 'index.price' : { '$gt' : 200000, '$lt': 400000 } }"
+  ],
+  threads: 10
+}

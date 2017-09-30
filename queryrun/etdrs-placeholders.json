@@ -1,0 +1,12 @@
+{
+	"ts": "@datetime(2017-01-01T00:00:00,2017-01-02T00:00:00)",
+	"im": "@long(0,639021023348866)",
+	"ms": "@long(0,639021023348866)",
+	"oa" : "@string(13,0123456789)",
+	"da" : "@string(13,0123456789)",
+	"pi" : "@integer(0,1000)",
+	"zt" : "@string(5)",
+	"et" : "@integer(0,10)",
+	"shardNumber" : "@integer(0,8,true)",
+	"oid" : "@objectid"
+}

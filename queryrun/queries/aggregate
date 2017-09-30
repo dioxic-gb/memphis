@@ -1,0 +1,1 @@
+aggregate([{$match: {"index.msgId": "${msgId}"}}, {$project: {"index.tradetradeId": 1, "index.tradeprice": 1}}])

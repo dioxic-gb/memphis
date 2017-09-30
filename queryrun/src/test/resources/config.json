@@ -1,0 +1,17 @@
+{
+  "mongoUri": "127.0.0.1",
+  "database": "HSBC",
+  "collection": "trades",
+  "iterations": 100,
+  "threads": 10,
+  "sampleSize": 10,
+  "placeholderFile": "placeholders.json",
+  "populations": {
+  	"sample": "com.mongodb.johnlpage.scalingtest.queryrun.data.SampleDbPopulation",
+  	"default": "com.mongodb.johnlpage.scalingtest.queryrun.data.SimpleDbPopulation"
+  },
+  "hashSuffix": "Hash",
+  "epochSuffix": "Epoc",
+  "hashIndex": ["index.msgId", "index.tradecorrelationId", "index.tradetradeId", "index.party1partyId", "index.party2partyId", "index.tradeproductId", "index.tradeissuer"],
+  "epochIndex": ["index.tradecreationTimestamp", "index.tradebusinessDate1", "index.tradebusinessDate2"]
+}

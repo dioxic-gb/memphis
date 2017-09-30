@@ -1,0 +1,59 @@
+{
+  "mongoUri": "127.0.0.1",
+  "database": "comfone",
+  "collection": "batch",
+  "tests": [
+    {
+      "name": "test1",
+      "stages": [
+        {
+          "name": "insert some stuff",
+          "operation": {
+            "type": "insertMany",
+            "database": "comfone",
+            "collection": {
+              "name": "batch",
+              "writeConcern": {
+                "w": "majority",
+                "journal": false
+              },
+              "readConcern": "majority",
+              "readPreference": "nearest"
+            },
+            "threads": 10,
+            "totalDocuments": 1000,
+            "batchSize": 100,
+            "options": {
+              "ordered": true,
+              "bypassDocumentValidation": true
+            },
+            "templates": [
+              {
+                "templateFile": "templates/etdrs.json",
+                "placeholderFile": "etdrs-placeholders.json",
+                "weighting": 10
+              }
+            ]
+          }
+        },
+        {
+          "name": "find some stuff",
+          "operation": {
+            "type": "find",
+            "iterations": 100,
+            "database": "comfone",
+            "collection": {
+              "name": "batch"
+            },
+            "templates": [
+              {
+                "templateFile": "queries/find",
+                "placeholderFile": "etdrs-placeholders.json"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

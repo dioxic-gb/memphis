@@ -1,0 +1,1 @@
+find({"nonpublicExecutionReport.trade.genericProduct.primaryAssetClass._text": "${trade.assetClass}"}, {"index.msgId": 1})

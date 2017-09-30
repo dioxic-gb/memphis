@@ -1,0 +1,4 @@
+aggregate([
+	{ $match: {"index.msgId": "${msgId}", "nonpublicExecutionReport.party.@id": "${party.partyId}"} },
+	{ $project: {"index.tradetradeId": 1, "index.tradeprice": 1} }
+])
