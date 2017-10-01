@@ -1,4 +1,4 @@
-package com.mongodb.memphis.config;
+package com.mongodb.memphis.placeholder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.annotations.NotThreadSafe;
-import com.mongodb.memphis.placeholder.Placeholder;
 
 /**
  * Parses BsonDocuments and binds placeholder locators to fields which have been

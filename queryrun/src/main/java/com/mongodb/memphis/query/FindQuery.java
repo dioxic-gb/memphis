@@ -8,8 +8,8 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.memphis.Config;
-import com.mongodb.memphis.config.PlaceholderParser;
 import com.mongodb.memphis.mutators.Mutator;
+import com.mongodb.memphis.placeholder.PlaceholderParser;
 
 public class FindQuery extends AbstractQuery {
 	private final BsonDocument bsonProjection;

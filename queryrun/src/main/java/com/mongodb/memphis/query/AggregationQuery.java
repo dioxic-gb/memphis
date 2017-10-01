@@ -9,8 +9,8 @@ import org.bson.BsonValue;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.memphis.Config;
-import com.mongodb.memphis.config.PlaceholderParser;
 import com.mongodb.memphis.mutators.Mutator;
+import com.mongodb.memphis.placeholder.PlaceholderParser;
 
 public class AggregationQuery extends AbstractQuery {
 

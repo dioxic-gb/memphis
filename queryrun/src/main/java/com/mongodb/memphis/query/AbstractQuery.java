@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.memphis.Config;
-import com.mongodb.memphis.config.PlaceholderParser;
-import com.mongodb.memphis.config.PlaceholderParser.PlaceHolderLocation;
 import com.mongodb.memphis.mutators.Mutator;
+import com.mongodb.memphis.placeholder.PlaceholderParser;
+import com.mongodb.memphis.placeholder.PlaceholderParser.PlaceHolderLocation;
 
 public abstract class AbstractQuery implements Query {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());

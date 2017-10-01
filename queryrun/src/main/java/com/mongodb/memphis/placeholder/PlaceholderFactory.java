@@ -16,7 +16,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.mongodb.memphis.annotations.Name;
-import com.mongodb.memphis.config.PlaceholderParser;
 import com.mongodb.memphis.config.adapters.LocalDateTimeTypeAdapter;
 
 public class PlaceholderFactory {

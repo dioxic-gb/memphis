@@ -1,6 +1,7 @@
 package com.mongodb.memphis.engine;
 
 public class Results {
+
 	long[] operationTimes;
 	long size;
 	long recordCount;

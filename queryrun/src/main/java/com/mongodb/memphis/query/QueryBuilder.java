@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.memphis.Config;
-import com.mongodb.memphis.config.PlaceholderParser;
 import com.mongodb.memphis.mutators.Mutator;
+import com.mongodb.memphis.placeholder.PlaceholderParser;
 
 public class QueryBuilder {
 

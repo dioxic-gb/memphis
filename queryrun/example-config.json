@@ -18,8 +18,8 @@
           "name": "insert some stuff",
           "operation": {
             "type": "insertMany",
-            "threads": 10,
-            "totalDocuments": 10000000,
+            "threads": 1,
+            "totalDocuments": 10000,
             "batchSize": 100,
             "options": {
               "ordered": false,
@@ -28,7 +28,7 @@
             "templates": [
               {
                 "templateFile": "templates/etdrs.json",
-                "placeholderFile": "etdrs-placeholders.json",
+                "placeholderFile": "example-placeholders.json",
                 "weighting": 10
               }
             ]
@@ -42,7 +42,7 @@
             "templates": [
               {
                 "templateFile": "queries/test.json",
-                "placeholderFile": "etdrs-placeholders.json"
+                "placeholderFile": "example-placeholders.json"
               }
             ]
           }
@@ -63,8 +63,8 @@
                 "journal": true
               }
             },
-            "threads": 20,
-            "totalDocuments": 1000000,
+            "threads": 1,
+            "totalDocuments": 1000,
             "batchSize": 50,
             "options": {
               "ordered": true,
@@ -73,7 +73,7 @@
             "templates": [
               {
                 "templateFile": "templates/etdrs.json",
-                "placeholderFile": "etdrs-placeholders.json"
+                "placeholderFile": "example-placeholders.json"
               }
             ]
           }

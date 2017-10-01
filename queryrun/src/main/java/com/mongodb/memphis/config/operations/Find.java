@@ -1,18 +1,24 @@
 package com.mongodb.memphis.config.operations;
 
-import java.util.List;
-
 import org.bson.BsonDocument;
+import org.bson.RawBsonDocument;
+import org.bson.conversions.Bson;
 
+import com.mongodb.Block;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.memphis.DocumentPool;
 import com.mongodb.memphis.annotations.Name;
 import com.mongodb.memphis.config.Operation;
+import com.mongodb.memphis.engine.QueryDocumentPool;
+import com.mongodb.memphis.engine.Results;
 
 @Name("find")
-public class Find extends Operation {
+public class Find extends Operation<QueryDocumentPool> {
 
-	private int iterations;
+	private int iterations = 1;
+	private int limit = -1;
+	private int batchSize = -1;
+	private Bson sort;
 
 	@Override
 	public final int getIterations() {
@@ -20,15 +26,33 @@ public class Find extends Operation {
 	}
 
 	@Override
-	protected void execute(MongoCollection<BsonDocument> collection, List<BsonDocument> documents) {
-		// TODO Auto-generated method stub
+	protected void execute(MongoCollection<BsonDocument> collection, QueryDocumentPool documentPool, Results results) {
+		FindIterable<RawBsonDocument> cursor = collection.find(documentPool.getNextQuery(), RawBsonDocument.class);
 
+		if (limit != -1) {
+			cursor.limit(limit);
+		}
+		if (batchSize != -1) {
+			cursor.batchSize(batchSize);
+		}
+		if (sort != null) {
+			cursor.sort(sort);
+		}
+
+		cursor.forEach(new Block<RawBsonDocument>() {
+			@Override
+			public void apply(final RawBsonDocument document) {
+				results.incRecordCount(123);
+				if (logger.isTraceEnabled()) {
+					logger.trace("document returned: {}", document.toJson());
+				}
+			}
+		});
 	}
 
 	@Override
-	protected DocumentPool createDocumentPool() {
-		// TODO Auto-generated method stub
-		return null;
+	protected QueryDocumentPool createDocumentPool() {
+		return new QueryDocumentPool(templates);
 	}
 
 }

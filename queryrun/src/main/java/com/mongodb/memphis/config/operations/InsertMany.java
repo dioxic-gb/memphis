@@ -1,17 +1,16 @@
 package com.mongodb.memphis.config.operations;
 
-import java.util.List;
-
 import org.bson.BsonDocument;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.InsertManyOptions;
-import com.mongodb.memphis.DocumentPool;
 import com.mongodb.memphis.annotations.Name;
 import com.mongodb.memphis.config.Operation;
+import com.mongodb.memphis.engine.DocumentPool;
+import com.mongodb.memphis.engine.Results;
 
-@Name("find")
-public class InsertMany extends Operation {
+@Name("insertMany")
+public class InsertMany extends Operation<DocumentPool> {
 
 	private int totalDocuments;
 	private int batchSize;
@@ -35,16 +34,15 @@ public class InsertMany extends Operation {
 	}
 
 	@Override
-	protected void execute(MongoCollection<BsonDocument> collection, List<BsonDocument> documents) {
-		collection.insertMany(documents, options);
+	protected void execute(MongoCollection<BsonDocument> collection, DocumentPool documentPool, Results results) {
+		collection.insertMany(documentPool.getDocuments(), options);
+		results.incSize(documentPool.getAverageDocumentSize() * batchSize);
+		results.incRecordCount(batchSize);
 	}
 
 	@Override
 	protected DocumentPool createDocumentPool() {
-		return DocumentPool.builder()
-				.poolSize(batchSize)
-				.templates(templates)
-				.build();
+		return new DocumentPool(templates, batchSize);
 	}
 
 }

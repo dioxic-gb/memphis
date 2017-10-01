@@ -9,15 +9,13 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import org.bson.BsonDocument;
-import org.bson.RawBsonDocument;
 
-import com.mongodb.Block;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.memphis.DocumentPool;
+import com.mongodb.memphis.engine.AbstractDocumentPool;
 import com.mongodb.memphis.engine.Results;
 import com.mongodb.memphis.util.StringUtils;
 
-public abstract class Operation extends Config {
+public abstract class Operation<T extends AbstractDocumentPool> extends Config {
 
 	protected int threads = 1;
 	protected List<Template> templates;
@@ -37,9 +35,9 @@ public abstract class Operation extends Config {
 
 	protected abstract int getIterations();
 
-	protected abstract DocumentPool createDocumentPool();
+	protected abstract T createDocumentPool();
 
-	protected abstract void execute(MongoCollection<BsonDocument> collection, List<BsonDocument> documents);
+	protected abstract void execute(MongoCollection<BsonDocument> collection, T documentPool, Results results);
 
 	@Override
 	public void execute() {
@@ -90,9 +88,8 @@ public abstract class Operation extends Config {
 			logger.debug("Thread {} starting", threadNum);
 			try {
 				results.initialise(getIterations());
-				long rawSize = 0;
 
-				DocumentPool docPool = createDocumentPool();
+				T docPool = createDocumentPool();
 				MongoCollection<BsonDocument> collection = getMongoCollection();
 
 				for (int counter = 0; counter < getIterations(); counter++) {
@@ -100,15 +97,11 @@ public abstract class Operation extends Config {
 
 					docPool.regenerateValues();
 
-					if (rawSize == 0L) {
-						rawSize = docPool.getAverageDocumentSize();
-					}
-
 					long startTime = System.currentTimeMillis();
-					execute(collection, docPool.getDocuments());
-					results.setOperationTime(counter, System.currentTimeMillis() - startTime);
-					results.incSize(rawSize * 10);
-					results.incRecordCount(10);
+					execute(collection, docPool, results);
+					long totalTime = System.currentTimeMillis() - startTime;
+
+					results.setOperationTime(counter, totalTime);
 				}
 			}
 			catch (Exception e) {
@@ -119,16 +112,6 @@ public abstract class Operation extends Config {
 			logger.debug("Thread {} complete processed {} operations", threadNum, getIterations());
 			return results;
 		}
-
-		Block<RawBsonDocument> printBlock = new Block<RawBsonDocument>() {
-			@Override
-			public void apply(final RawBsonDocument document) {
-				if (logger.isTraceEnabled()) {
-					logger.trace("document returned: {}", document.toJson());
-				}
-			}
-		};
-
 	}
 
 }
