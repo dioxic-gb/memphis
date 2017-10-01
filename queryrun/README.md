@@ -16,7 +16,7 @@ The config file looks something like this:
 ```
 {
   "mongoUri": "127.0.0.1",
-  "database": "HSBC",
+  "database": "test",
   "collection": "trades",
   "iterations": 100,
   "threads": 20,
