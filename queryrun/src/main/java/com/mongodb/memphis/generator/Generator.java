@@ -1,5 +1,7 @@
 package com.mongodb.memphis.generator;
 
+import org.bson.BsonValue;
+
 import com.mongodb.memphis.data.Population;
 import com.mongodb.memphis.placeholder.Placeholder;
 
@@ -7,6 +9,9 @@ public abstract class Generator extends Placeholder implements Cloneable {
 
 	protected Population population;
 	protected String queryKey;
+	protected boolean batchMode = false;
+
+	private transient BsonValue value;
 
 	public void setPopulation(Population population) {
 		this.population = population;
@@ -17,13 +22,20 @@ public abstract class Generator extends Placeholder implements Cloneable {
 	}
 
 	@Override
-	public String toString() {
-		String result = getClass().getSimpleName();
-		if (population != null) {
-			result = result + " [population=" + population + "]";
+	public BsonValue getValue() {
+		if (!batchMode || value == null) {
+			value = nextValue();
 		}
-
-		return result;
+		return value;
 	}
+
+	@Override
+	public void nextBatch() {
+		if (batchMode) {
+			value = nextValue();
+		}
+	}
+
+	protected abstract BsonValue nextValue();
 
 }

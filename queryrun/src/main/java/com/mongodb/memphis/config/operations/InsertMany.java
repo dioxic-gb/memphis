@@ -36,8 +36,8 @@ public class InsertMany extends Operation<DocumentPool> {
 	@Override
 	protected void execute(MongoCollection<BsonDocument> collection, DocumentPool documentPool, Results results) {
 		collection.insertMany(documentPool.getDocuments(), options);
-		results.incSize(documentPool.getAverageDocumentSize() * batchSize);
-		results.incRecordCount(batchSize);
+		results.bytesWritten(documentPool.getAverageDocumentSize() * batchSize);
+		results.docsWritten(batchSize);
 	}
 
 	@Override

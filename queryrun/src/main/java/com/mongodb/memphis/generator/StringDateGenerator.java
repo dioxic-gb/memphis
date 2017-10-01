@@ -13,7 +13,7 @@ public class StringDateGenerator extends Generator {
 	private transient final Random random = new Random();
 
 	@Override
-	public BsonValue getValue() {
+	public BsonValue nextValue() {
 
 		int day = random.nextInt(28) + 1;
 		int year = random.nextInt(5) + 2015;

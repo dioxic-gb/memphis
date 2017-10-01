@@ -19,7 +19,7 @@
           "operation": {
             "type": "insertMany",
             "threads": 1,
-            "totalDocuments": 10000,
+            "totalDocuments": 200,
             "batchSize": 100,
             "options": {
               "ordered": false,
@@ -56,18 +56,11 @@
           "name": "insert some stuff",
           "operation": {
             "type": "insertMany",
-            "collection": {
-              "name": "batch2",
-              "writeConcern": {
-                "w": "majority",
-                "journal": true
-              }
-            },
-            "threads": 1,
-            "totalDocuments": 1000,
-            "batchSize": 50,
+            "threads": 10,
+            "totalDocuments": 0,
+            "batchSize": 100,
             "options": {
-              "ordered": true,
+              "ordered": false,
               "bypassDocumentValidation": true
             },
             "templates": [

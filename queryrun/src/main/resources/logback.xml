@@ -18,6 +18,7 @@
     </appender>
 
     <logger name="org.mongodb.driver" level="WARN"/>
+    <logger name="org.reflections.Reflections" level="WARN"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

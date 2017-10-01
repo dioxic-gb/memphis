@@ -13,7 +13,7 @@ public class StringDateTimeGenerator extends Generator {
 	private transient final Random random = new Random();
 
     @Override
-	public BsonValue getValue() {
+	public BsonValue nextValue() {
         StringBuilder sb = new StringBuilder(10);
 
         sb.append(random.nextInt(33)+2017);

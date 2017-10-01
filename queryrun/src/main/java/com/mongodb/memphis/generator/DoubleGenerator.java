@@ -16,7 +16,7 @@ public class DoubleGenerator extends Generator {
 	private transient final Random random = new Random();
 
 	@Override
-	public BsonValue getValue() {
+	public BsonValue nextValue() {
 		return new BsonDouble(random.nextDouble() * (max - min) + min);
 	}
 

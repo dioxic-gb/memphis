@@ -26,7 +26,7 @@ public class DateTimeGenerator extends Generator {
 	}
 
 	@Override
-	public BsonValue getValue() {
+	public BsonValue nextValue() {
 		Double d = new Double(random.nextDouble() * (maxLong - minLong));
 		return new BsonDateTime(d.longValue() + minLong);
 	}

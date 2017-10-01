@@ -42,7 +42,8 @@ public class Find extends Operation<QueryDocumentPool> {
 		cursor.forEach(new Block<RawBsonDocument>() {
 			@Override
 			public void apply(final RawBsonDocument document) {
-				results.incRecordCount(123);
+				results.docsRead(1);
+				results.bytesRead(document.getByteBuffer().limit());
 				if (logger.isTraceEnabled()) {
 					logger.trace("document returned: {}", document.toJson());
 				}

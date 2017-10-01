@@ -1,63 +1,100 @@
 package com.mongodb.memphis.engine;
 
+import java.util.Arrays;
+import java.util.LongSummaryStatistics;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mongodb.annotations.ThreadSafe;
+import com.mongodb.memphis.util.StringUtils;
+
+@ThreadSafe
 public class Results {
 
-	long[] operationTimes;
-	long size;
-	long recordCount;
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
-	public void initialise(int operationIterations) {
-		operationTimes = new long[operationIterations];
-		size = 0;
-		recordCount = 0;
+	private long[][] operationTimes;
+	private AtomicLong bytesRead;
+	private AtomicLong bytesWritten;
+	private AtomicLong docsRead;
+	private AtomicLong docsWritten;
+
+	public Results(int threads, int operationIterations) {
+		operationTimes = new long[threads][operationIterations];
+		bytesRead = new AtomicLong(0);
+		bytesWritten = new AtomicLong(0);
+		docsRead = new AtomicLong(0);
+		docsWritten = new AtomicLong(0);
 	}
 
-	public long[] getOperationTimes() {
+	public long[][] getOperationTimes() {
 		return operationTimes;
 	}
 
-	public long getTotalSize() {
-		return size;
+	public LongSummaryStatistics reduceStatistics() {
+		return Arrays.stream(operationTimes).flatMapToLong(Arrays::stream).summaryStatistics();
 	}
 
-	public long getRecordCount() {
-		return recordCount;
+	public void setOperationTime(int thread, int opIteration, long opTime) {
+		operationTimes[thread][opIteration] = opTime;
 	}
 
-	public void setOperationTime(int opIteration, long opTime) {
-		operationTimes[opIteration] = opTime;
+	public long getBytesRead() {
+		return bytesRead.get();
 	}
 
-	public void incSize(long size) {
-		this.size += size;
+	public void bytesRead(long bytesRead) {
+		this.bytesRead.addAndGet(bytesRead);
 	}
 
-	public void incRecordCount(long recordCount) {
-		this.recordCount += recordCount;
+	public long getBytesWritten() {
+		return bytesWritten.get();
 	}
 
-	/**
-	 * 			// load the query times into the stats engine
-			LongStatistics stats = new LongStatistics();
-			long totalSize = 0;
-			long totalRecords = 0;
-			for (Results result : results) {
-				totalSize += result.size;
-				totalRecords += result.recordCount;
-				for (long time : result.insertTime) {
-					stats.accept(time);
-				}
-			}
+	public void bytesWritten(long bytesWritten) {
+		this.bytesWritten.addAndGet(bytesWritten);
+	}
 
-			logger.info("Total Records inserted: {}", totalRecords);
-			logger.info("Insert rate: {}/s", Math.ceil(1000*totalRecords/totalTime));
-			logger.info("Max insert time: {}", StringUtils.prettifyTime(stats.getMax()));
-			logger.info("Min insert time: {}", StringUtils.prettifyTime(stats.getMin()));
-			logger.info("Average insert time: {}", StringUtils.prettifyTime((long) stats.getAverage()));
-			logger.info("Total insert time: {}", StringUtils.prettifyTime(totalTime));
-			logger.info("SD of insert time: {}", stats.getStandardDeviation());
-			logger.info("Total data transferred: {}", StringUtils.prettifySize(totalSize));
-			logger.info("Transfer rate: {}", StringUtils.prettifyTransferRate(1000*totalSize/totalTime));
-	 */
+	public long getDocsRead() {
+		return docsRead.get();
+	}
+
+	public void docsRead(long docsRead) {
+		this.docsRead.addAndGet(docsRead);
+	}
+
+	public long getDocsWritten() {
+		return docsWritten.get();
+	}
+
+	public void docsWritten(long docsWritten) {
+		this.docsWritten.addAndGet(docsWritten);
+	}
+
+	public void mergeResults(Results results) {
+		bytesRead(results.getBytesRead());
+		bytesWritten(results.getBytesWritten());
+		docsRead(results.getDocsRead());
+		docsWritten(results.getDocsWritten());
+	}
+
+	public void printResults() {
+		LongSummaryStatistics stats = reduceStatistics();
+
+		long totalTime = stats.getSum() / operationTimes.length;
+
+		if (totalTime > 0) {
+			logger.info("Total time: {}", StringUtils.prettifyTime(totalTime));
+			logger.info("Insert rate: [{}, {}]", StringUtils.prettifyRate(" docs", docsWritten.get() / totalTime), StringUtils.prettifyTransferRate(bytesWritten.get() / totalTime));
+			logger.info("Read rate: [{}, {}]", StringUtils.prettifyRate(" docs", docsRead.get() / totalTime), StringUtils.prettifyTransferRate(bytesRead.get() / totalTime));
+			logger.info("Operation time: [min: {}, max: {}, avg: {}]", StringUtils.prettifyTime(stats.getMin()), StringUtils.prettifyTime(stats.getMax()), StringUtils.prettifyTime((long) stats.getAverage()));
+			// logger.info("SD of insert time: {}",
+			// stats.getStandardDeviation());
+			logger.info("Total written: [{} documents, {}]", docsWritten, StringUtils.prettifySize(bytesWritten.get()));
+			logger.info("Total read: [{} documents, {}]", docsRead, StringUtils.prettifySize(bytesRead.get()));
+		}
+	}
 
 }

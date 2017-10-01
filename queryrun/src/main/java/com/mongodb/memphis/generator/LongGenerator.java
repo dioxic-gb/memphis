@@ -16,7 +16,7 @@ public class LongGenerator extends Generator {
 	private transient final Random random = new Random();
 
 	@Override
-	public BsonValue getValue() {
+	public BsonValue nextValue() {
 		Double d = new Double(random.nextDouble() * (max - min));
 		return new BsonInt64(d.longValue() + min);
 	}

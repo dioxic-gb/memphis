@@ -9,7 +9,7 @@ import com.mongodb.memphis.annotations.Name;
 public class ObjectIdGenerator extends Generator {
 
 	@Override
-	public BsonValue getValue() {
+	public BsonValue nextValue() {
 		return new BsonObjectId();
 	}
 }

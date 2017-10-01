@@ -40,8 +40,13 @@ public class StringUtils {
 		return milliseconds + "ms";
 	}
 
-	public static String prettifyTransferRate(long bytesPerSecond) {
-		return prettifySize(bytesPerSecond) + "/s";
+	public static String prettifyTransferRate(long bytesPerMilliSecond) {
+		return prettifySize(bytesPerMilliSecond*1000) + "/s";
+	}
+
+	public static String prettifyRate(String something, double somethingPerMilliSecond) {
+		DecimalFormat df = new DecimalFormat("####");
+		return df.format(somethingPerMilliSecond*1000) + something + "/s";
 	}
 
 	public static String prettifySize(Long bytes) {

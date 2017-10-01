@@ -3,10 +3,8 @@ package com.mongodb.memphis.config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 import org.bson.BsonDocument;
 
@@ -20,6 +18,8 @@ public abstract class Operation<T extends AbstractDocumentPool> extends Config {
 	protected int threads = 1;
 	protected List<Template> templates;
 
+	private transient Results operationResults;
+
 	public final List<Template> getTemplates() {
 		return templates;
 	}
@@ -31,6 +31,15 @@ public abstract class Operation<T extends AbstractDocumentPool> extends Config {
 
 	public int getThreads() {
 		return threads;
+	}
+
+	public Results getResults() {
+		return operationResults;
+	}
+
+	@Override
+	protected void initialise() {
+		operationResults = new Results(getThreads(), getIterations());
 	}
 
 	protected abstract int getIterations();
@@ -53,15 +62,7 @@ public abstract class Operation<T extends AbstractDocumentPool> extends Config {
 		long startTime = System.currentTimeMillis();
 
 		try {
-			// collect the query times once the threads have completed
-			List<Results> results = executor.invokeAll(tasks).stream().map(future -> {
-				try {
-					return future.get();
-				}
-				catch (InterruptedException | ExecutionException e) {
-					throw new RuntimeException(e);
-				}
-			}).collect(Collectors.toList());
+			executor.invokeAll(tasks);
 		}
 		catch (InterruptedException e) {
 			throw new RuntimeException(e);
@@ -71,24 +72,22 @@ public abstract class Operation<T extends AbstractDocumentPool> extends Config {
 
 		executor.shutdown();
 
+		operationResults.printResults();
+
 		logger.info("Operation {} completed in {}", getClass().getSimpleName(), StringUtils.prettifyTime(totalTime));
 	}
 
-	class Worker implements Callable<Results> {
+	class Worker implements Callable<Void> {
 		int threadNum;
-		Results results;
 
 		public Worker(int threadNumber) {
 			this.threadNum = threadNumber;
-			results = new Results();
 		}
 
 		@Override
-		public Results call() throws Exception {
+		public Void call() throws Exception {
 			logger.debug("Thread {} starting", threadNum);
 			try {
-				results.initialise(getIterations());
-
 				T docPool = createDocumentPool();
 				MongoCollection<BsonDocument> collection = getMongoCollection();
 
@@ -98,10 +97,10 @@ public abstract class Operation<T extends AbstractDocumentPool> extends Config {
 					docPool.regenerateValues();
 
 					long startTime = System.currentTimeMillis();
-					execute(collection, docPool, results);
+					execute(collection, docPool, operationResults);
 					long totalTime = System.currentTimeMillis() - startTime;
 
-					results.setOperationTime(counter, totalTime);
+					operationResults.setOperationTime(threadNum, counter, totalTime);
 				}
 			}
 			catch (Exception e) {
@@ -110,7 +109,7 @@ public abstract class Operation<T extends AbstractDocumentPool> extends Config {
 			}
 
 			logger.debug("Thread {} complete processed {} operations", threadNum, getIterations());
-			return results;
+			return null;
 		}
 	}
 
