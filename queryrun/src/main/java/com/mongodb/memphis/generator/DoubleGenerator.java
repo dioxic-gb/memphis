@@ -1,7 +1,5 @@
 package com.mongodb.memphis.generator;
 
-import java.util.Random;
-
 import org.bson.BsonDouble;
 import org.bson.BsonValue;
 
@@ -10,14 +8,20 @@ import com.mongodb.memphis.annotations.Name;
 @Name("double")
 public class DoubleGenerator extends Generator {
 
-	protected double min = Double.MIN_VALUE;
-	protected double max = Double.MAX_VALUE;
-
-	private transient final Random random = new Random();
+	private double min = Double.MIN_VALUE;
+	private double max = Double.MAX_VALUE;
+	private Double[] list;
 
 	@Override
 	public BsonValue nextValue() {
-		return new BsonDouble(random.nextDouble() * (max - min) + min);
+		double value;
+		if (list != null) {
+			value = getRandomFromList(list);
+		}
+		else {
+			value = random.nextDouble() * (max - min) + min;
+		}
+		return new BsonDouble(value);
 	}
 
 }

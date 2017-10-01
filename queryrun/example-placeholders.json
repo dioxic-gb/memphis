@@ -27,13 +27,19 @@
   },
   "zt": {
     "type": "string",
-    "length": "5",
-    "saltChars": "ABC"
+    "list": [
+      "ABC",
+      "DEF"
+    ]
   },
   "et": {
     "type": "integer",
-    "min": "0",
-    "max": "10"
+    "list": [
+      1,
+      2,
+      3,
+      4
+    ]
   },
   "shardNumber": {
     "type": "integer",

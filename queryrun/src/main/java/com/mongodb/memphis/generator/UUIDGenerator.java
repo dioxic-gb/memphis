@@ -14,5 +14,4 @@ public class UUIDGenerator extends Generator {
 	public BsonValue nextValue() {
 		return new BsonString(UUID.randomUUID().toString());
 	}
-
 }

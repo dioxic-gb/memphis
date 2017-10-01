@@ -1,7 +1,5 @@
 package com.mongodb.memphis.generator;
 
-import java.util.Random;
-
 import org.bson.BsonString;
 import org.bson.BsonValue;
 
@@ -9,8 +7,6 @@ import com.mongodb.memphis.annotations.Name;
 
 @Name("stringdatetime")
 public class StringDateTimeGenerator extends Generator {
-
-	private transient final Random random = new Random();
 
     @Override
 	public BsonValue nextValue() {
