@@ -22,7 +22,7 @@ import com.mongodb.memphis.config.adapters.LocalDateTimeTypeAdapter;
 public class PlaceholderFactory {
 	private final static Logger logger = LoggerFactory.getLogger(PlaceholderFactory.class);
 
-	private Map<String, Placeholder> placeholderMap;
+	private String placeholderJson;
 
 	private static Gson gson;
 
@@ -46,19 +46,13 @@ public class PlaceholderFactory {
 				.create();
 	}
 
-	public PlaceholderFactory(Map<String, Placeholder> placeholderMap) {
-		this.placeholderMap = placeholderMap;
-		for (Placeholder placeholder : placeholderMap.values()) {
-			placeholder.initialise();
-		}
+	public PlaceholderFactory(String placeholderJson) {
+		this.placeholderJson = placeholderJson;
 	}
 
 	public static PlaceholderFactory load(String placeholderFile) {
-		String configJson;
 		try {
-			configJson = new String(Files.readAllBytes(Paths.get(placeholderFile)), StandardCharsets.UTF_8);
-			return new PlaceholderFactory(gson.fromJson(configJson, new TypeToken<Map<String, Placeholder>>() {
-			}.getType()));
+			return new PlaceholderFactory(new String(Files.readAllBytes(Paths.get(placeholderFile)), StandardCharsets.UTF_8));
 		}
 		catch (IOException e) {
 			logger.error("{} - could not parse placeholder file {}", e.getClass().getSimpleName(), placeholderFile);
@@ -67,6 +61,14 @@ public class PlaceholderFactory {
 	}
 
 	public PlaceholderParser create() {
+		// use gson to parse the placeholder json
+		Map<String, Placeholder> placeholderMap = gson.fromJson(placeholderJson, new TypeToken<Map<String, Placeholder>>() {
+		}.getType());
+
+		// initialise placeholders
+		for (Placeholder placeholder : placeholderMap.values()) {
+			placeholder.initialise();
+		}
 		return new PlaceholderParser(placeholderMap);
 	}
 
