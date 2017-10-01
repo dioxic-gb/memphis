@@ -1,7 +1,15 @@
 {
   "mongoUri": "127.0.0.1",
   "database": "comfone",
-  "collection": "batch",
+  "collection": {
+    "name": "batch",
+    "writeConcern": {
+      "w": 0,
+      "journal": false
+    },
+    "readConcern": "majority",
+    "readPreference": "nearest"
+  },
   "tests": [
     {
       "name": "test1",
@@ -10,21 +18,11 @@
           "name": "insert some stuff",
           "operation": {
             "type": "insertMany",
-            "database": "comfone",
-            "collection": {
-              "name": "batch",
-              "writeConcern": {
-                "w": "majority",
-                "journal": false
-              },
-              "readConcern": "majority",
-              "readPreference": "nearest"
-            },
             "threads": 10,
-            "totalDocuments": 1000,
+            "totalDocuments": 10000000,
             "batchSize": 100,
             "options": {
-              "ordered": true,
+              "ordered": false,
               "bypassDocumentValidation": true
             },
             "templates": [
@@ -40,14 +38,41 @@
           "name": "find some stuff",
           "operation": {
             "type": "find",
-            "iterations": 100,
-            "database": "comfone",
+            "iterations": 0,
+            "templates": [
+              {
+                "templateFile": "queries/test.json",
+                "placeholderFile": "etdrs-placeholders.json"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "test2",
+      "stages": [
+        {
+          "name": "insert some stuff",
+          "operation": {
+            "type": "insertMany",
             "collection": {
-              "name": "batch"
+              "name": "batch2",
+              "writeConcern": {
+                "w": "majority",
+                "journal": true
+              }
+            },
+            "threads": 20,
+            "totalDocuments": 1000000,
+            "batchSize": 50,
+            "options": {
+              "ordered": true,
+              "bypassDocumentValidation": true
             },
             "templates": [
               {
-                "templateFile": "queries/find",
+                "templateFile": "templates/etdrs.json",
                 "placeholderFile": "etdrs-placeholders.json"
               }
             ]

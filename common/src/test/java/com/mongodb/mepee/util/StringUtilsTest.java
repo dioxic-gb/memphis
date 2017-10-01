@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.mongodb.mepee.util.StringUtils;
+import com.mongodb.memphis.util.StringUtils;
 
 public class StringUtilsTest {
 
