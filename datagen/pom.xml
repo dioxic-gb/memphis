@@ -10,8 +10,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.mongodb.mepee</groupId>
-			<artifactId>mepee-common</artifactId>
+			<groupId>com.mongodb.memphis</groupId>
+			<artifactId>memphis-common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

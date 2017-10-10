@@ -17,7 +17,7 @@ public class DoubleGeneratorTest extends AbstractGeneratorTest {
 			BsonValue value = generator.getValue();
 			assertThat(value.isDouble()).as("is double").isTrue();
 			assertThat(value.asDouble().getValue()).as("generated value in range").isBetween(generator.min, generator.max);
-			logger.info("Generated double: {}", value.asDouble().getValue());
+			logger.debug("Generated double: {}", value.asDouble().getValue());
 		}
 	}
 }

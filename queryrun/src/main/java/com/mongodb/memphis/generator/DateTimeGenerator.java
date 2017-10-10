@@ -11,8 +11,8 @@ import com.mongodb.memphis.annotations.Name;
 @Name("datetime")
 public class DateTimeGenerator extends Generator {
 
-	private LocalDateTime min = LocalDateTime.MIN;
-	private LocalDateTime max = LocalDateTime.MAX;
+	LocalDateTime min = LocalDateTime.MIN;
+	LocalDateTime max = LocalDateTime.MAX;
 	private long minLong;
 	private long maxLong;
 

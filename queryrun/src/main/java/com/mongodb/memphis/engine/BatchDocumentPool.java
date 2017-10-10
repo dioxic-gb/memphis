@@ -16,9 +16,9 @@ import com.mongodb.memphis.config.Template;
  * @author Mark Baker-Munton
  */
 @NotThreadSafe
-public class DocumentPool extends AbstractDocumentPool {
+public class BatchDocumentPool extends AbstractDocumentPool {
 
-	public DocumentPool(List<Template> templates, int poolSize) {
+	public BatchDocumentPool(List<Template> templates, int poolSize) {
 		super(templates, poolSize);
 	}
 

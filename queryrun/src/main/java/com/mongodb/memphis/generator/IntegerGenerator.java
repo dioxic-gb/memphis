@@ -8,9 +8,9 @@ import com.mongodb.memphis.annotations.Name;
 @Name("integer")
 public class IntegerGenerator extends Generator {
 
-	private int min = Integer.MIN_VALUE;
-	private int max = Integer.MAX_VALUE;
-	private Integer[] list;
+	int min = Integer.MIN_VALUE;
+	int max = Integer.MAX_VALUE;
+	Integer[] list;
 
 	@Override
 	protected BsonValue nextValue() {

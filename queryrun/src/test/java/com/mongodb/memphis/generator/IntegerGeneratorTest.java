@@ -17,7 +17,7 @@ public class IntegerGeneratorTest extends AbstractGeneratorTest {
 			BsonValue value = generator.getValue();
 			assertThat(value.isInt32()).as("is integer").isTrue();
 			assertThat(value.asInt32().getValue()).as("generated value in range").isBetween(generator.min, generator.max);
-			logger.info("Generated integer: {}", value.asInt32().getValue());
+			logger.debug("Generated integer: {}", value.asInt32().getValue());
 		}
 	}
 }

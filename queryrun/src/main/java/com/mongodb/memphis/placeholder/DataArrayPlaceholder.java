@@ -9,7 +9,7 @@ import org.bson.BsonValue;
 import com.mongodb.memphis.generator.Generator;
 import com.mongodb.memphis.generator.Generator;
 
-public class DataArrayPlaceholder extends Generator implements Name {
+public class DataArrayPlaceholder extends Generator {
 
 	private int arraySize;
 
@@ -25,7 +25,6 @@ public class DataArrayPlaceholder extends Generator implements Name {
 		return new BsonArray(bsonList);
 	}
 
-	@Override
 	public void setArguements(String[] args) {
 		if (args != null && args.length == 1) {
 			arraySize = Integer.parseInt(args[0]);
@@ -35,9 +34,14 @@ public class DataArrayPlaceholder extends Generator implements Name {
 		}
 	}
 
-	@Override
 	public void init() {
 		population.addField(queryKey);
+	}
+
+	@Override
+	protected BsonValue nextValue() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

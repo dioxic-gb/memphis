@@ -34,7 +34,7 @@ public class ThreadResults {
 	}
 
 	public void bytesRead(long bytesRead) {
-		this.bytesRead = +bytesRead;
+		this.bytesRead =+ bytesRead;
 	}
 
 	public long getBytesWritten() {
@@ -42,7 +42,7 @@ public class ThreadResults {
 	}
 
 	public void bytesWritten(long bytesWritten) {
-		this.bytesWritten = +bytesWritten;
+		this.bytesWritten =+ bytesWritten;
 	}
 
 	public long getDocsRead() {
@@ -50,7 +50,7 @@ public class ThreadResults {
 	}
 
 	public void docsRead(long docsRead) {
-		this.docsRead = +docsRead;
+		this.docsRead =+ docsRead;
 	}
 
 	public long getDocsWritten() {
@@ -58,7 +58,7 @@ public class ThreadResults {
 	}
 
 	public void docsWritten(long docsWritten) {
-		this.docsWritten = +docsWritten;
+		this.docsWritten =+ docsWritten;
 	}
 
 	public void mergeResults(Results results) {

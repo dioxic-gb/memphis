@@ -32,7 +32,7 @@ public class DateTimeGeneratorTest extends AbstractGeneratorTest {
 			assertThat(bsonValue.isDateTime()).as("is datetime").isTrue();
 			assertThat(bsonValue.asDateTime().getValue()).as("generated value in range").isBetween(minLong, maxLong);
 
-			logger.info("Generated date: {}", Instant.ofEpochMilli(bsonValue.asDateTime().getValue()));
+			logger.debug("Generated date: {}", Instant.ofEpochMilli(bsonValue.asDateTime().getValue()));
 		}
 	}
 }

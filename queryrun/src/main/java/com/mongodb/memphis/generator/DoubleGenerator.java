@@ -8,9 +8,9 @@ import com.mongodb.memphis.annotations.Name;
 @Name("double")
 public class DoubleGenerator extends Generator {
 
-	private double min = Double.MIN_VALUE;
-	private double max = Double.MAX_VALUE;
-	private Double[] list;
+	double min = Double.MIN_VALUE;
+	double max = Double.MAX_VALUE;
+	Double[] list;
 
 	@Override
 	public BsonValue nextValue() {
