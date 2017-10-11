@@ -1,5 +1,9 @@
 package com.mongodb.memphis.config;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.reflections.Reflections;
@@ -91,8 +95,13 @@ public class Root extends Config {
 		return tests;
 	}
 
-	public static Root load(String configJson) {
+	public static Root loadFromJson(String configJson) {
 		return gson.fromJson(configJson, Root.class);
+	}
+
+	public static Root loadFromFile(String filename) throws IOException {
+		String configJson = new String(Files.readAllBytes(Paths.get(filename)), StandardCharsets.UTF_8);
+		return loadFromJson(configJson);
 	}
 
 	@Override

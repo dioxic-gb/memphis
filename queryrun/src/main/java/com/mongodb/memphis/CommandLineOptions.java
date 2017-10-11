@@ -1,5 +1,7 @@
 package com.mongodb.memphis;
 
+import java.io.IOException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -35,24 +37,19 @@ public class CommandLineOptions {
 
 		if (cmd.hasOption("c")) {
 			configFile = cmd.getOptionValue("c");
+		} else {
+			logger.error("No config file supplied - exiting");
+			System.exit(1);
 		}
 
 		if (cmd.hasOption("help")) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("WeatherService", cliopt);
+			formatter.printHelp("Memphis", cliopt);
 			System.exit(0);
 		}
 
-		if (configFile != null) {
-			config = Root.load(configFile);
-
-			if (cmd.hasOption("d")) {
-				debug = true;
-			}
-		}
-		else {
-			logger.error("No config file supplied - exiting");
-			System.exit(1);
+		if (cmd.hasOption("d")) {
+			debug = true;
 		}
 	}
 
@@ -60,8 +57,8 @@ public class CommandLineOptions {
 		return debug;
 	}
 
-	public Root getConfig() {
-		return config;
+	public Root getConfig() throws IOException {
+		return Root.loadFromFile(configFile);
 	}
 
 }

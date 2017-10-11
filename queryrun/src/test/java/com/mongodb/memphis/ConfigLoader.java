@@ -23,7 +23,7 @@ public class ConfigLoader {
 		try {
 			String configJson = new String(Files.readAllBytes(Paths.get("example-config.json")), StandardCharsets.UTF_8);
 
-			Root root = Root.load(configJson);
+			Root root = Root.loadFromJson(configJson);
 
 			logger.info(root.toString());
 			assertNotNull(root);

@@ -2,6 +2,8 @@ package com.mongodb.memphis.generator;
 
 import java.util.Random;
 
+import org.apache.commons.math4.random.UniformRandomGenerator;
+import org.apache.commons.rng.UniformRandomProvider;
 import org.bson.BsonValue;
 
 import com.mongodb.memphis.data.Population;
@@ -15,7 +17,7 @@ public abstract class Generator extends Placeholder implements Cloneable {
 
 	private transient BsonValue value;
 	protected transient final Random random = new Random();
-
+	
 	public void setPopulation(Population population) {
 		this.population = population;
 	}
