@@ -10,14 +10,14 @@ import org.bson.BsonDocument;
 import com.mongodb.memphis.config.Template;
 import com.mongodb.memphis.placeholder.Placeholder;
 import com.mongodb.memphis.placeholder.PlaceholderParser;
-import com.mongodb.memphis.placeholder.PlaceholderParser.PlaceHolderLocation;
+import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
 
 public class AbstractDocumentPool {
 
 	protected int poolSize;
 	protected List<Template> templates;
 	protected List<BsonDocument> documents;
-	protected List<PlaceHolderLocation> placeHolderLocations;
+	protected List<PlaceholderLocation> placeholderLocations;
 	protected Collection<Placeholder> placeholders;
 	protected BsonDocument[] templateExamples;
 	protected long averageDocumentSize = -1;
@@ -30,7 +30,7 @@ public class AbstractDocumentPool {
 
 	private void initialise() {
 		documents = new ArrayList<>(poolSize);
-		placeHolderLocations = new ArrayList<>(poolSize);
+		placeholderLocations = new ArrayList<>(poolSize);
 		placeholders = new ArrayList<>();
 		templateExamples = new BsonDocument[templates.size()];
 
@@ -57,7 +57,7 @@ public class AbstractDocumentPool {
 			BsonDocument doc = template.getTemplate().clone();
 			documents.add(doc);
 			templateExamples[templateIndex] = doc;
-			placeHolderLocations.addAll(parser.parseDocument(documents.get(i)));
+			placeholderLocations.addAll(parser.parseDocument(documents.get(i)));
 			docCount++;
 		}
 	}
@@ -83,7 +83,7 @@ public class AbstractDocumentPool {
 		for (Placeholder placeholder : placeholders) {
 			placeholder.nextBatch();
 		}
-		for (PlaceHolderLocation locator : placeHolderLocations) {
+		for (PlaceholderLocation locator : placeholderLocations) {
 			locator.apply();
 		}
 	}

@@ -68,7 +68,7 @@ public class Root extends Config {
 		// set timeout to 1hr
 		MongoClientOptions.Builder builder = MongoClientOptions.builder()
 				.socketTimeout(60 * 60 * 1000)
-				.applicationName("MEPEE")
+				.applicationName("Memphis")
 				.maxConnectionIdleTime(0);
 
 		client = new MongoClient(new MongoClientURI("mongodb://" + mongoUri, builder));

@@ -15,7 +15,7 @@ import com.mongodb.client.MongoIterable;
 import com.mongodb.memphis.Config;
 import com.mongodb.memphis.mutators.Mutator;
 import com.mongodb.memphis.placeholder.PlaceholderParser;
-import com.mongodb.memphis.placeholder.PlaceholderParser.PlaceHolderLocation;
+import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
 
 public abstract class AbstractQuery implements Query {
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
@@ -23,7 +23,7 @@ public abstract class AbstractQuery implements Query {
 	protected final Config config;
 	protected final List<Mutator> mutators;
 	protected final List<BsonDocument> bsonList;
-	private final List<PlaceHolderLocation> locations;
+	private final List<PlaceholderLocation> locations;
 
 	protected AbstractQuery(String query, Config config, PlaceholderParser parser, List<Mutator> mutators) {
 		this.rawQuery = query;
@@ -106,7 +106,7 @@ public abstract class AbstractQuery implements Query {
 	}
 
 	public void applyPlaceholders() {
-		for (PlaceHolderLocation location : locations) {
+		for (PlaceholderLocation location : locations) {
 			logger.trace("applying {}", location.toString());
 			location.apply();
 		}

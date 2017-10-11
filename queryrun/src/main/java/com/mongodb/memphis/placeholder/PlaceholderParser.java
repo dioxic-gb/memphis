@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bson.BsonArray;
 import org.bson.BsonDocument;
 import org.bson.BsonString;
 import org.bson.BsonValue;
@@ -13,6 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.annotations.NotThreadSafe;
+import com.mongodb.memphis.placeholder.location.ArrayLocation;
+import com.mongodb.memphis.placeholder.location.DocumentLocation;
+import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
 
 /**
  * Parses BsonDocuments and binds placeholder locators to fields which have been
@@ -43,18 +47,21 @@ public class PlaceholderParser {
 	 * @param document
 	 * @return placeholder locators
 	 */
-	public List<PlaceHolderLocation> parseDocument(BsonDocument document) {
-		List<PlaceHolderLocation> locations = new ArrayList<>();
+	public List<PlaceholderLocation> parseDocument(BsonDocument document) {
+		List<PlaceholderLocation> locations = new ArrayList<>();
 		parseDocument(locations, document);
 		return locations;
 	}
 
-	private void parseDocument(List<PlaceHolderLocation> locations, BsonDocument document) {
+	private void parseDocument(List<PlaceholderLocation> locations, BsonDocument document) {
 		for (String key : document.keySet()) {
 			BsonValue value = document.get(key);
 
 			if (value.isDocument()) {
 				parseDocument(locations, value.asDocument());
+			}
+			else if (value.isArray()) {
+				parseArray(locations, value.asArray());
 			}
 			else if (value.isString()) {
 				BsonString stringValue = value.asString();
@@ -63,45 +70,34 @@ public class PlaceholderParser {
 				// placeholder value ${xxx}
 				if (matcher.find()) {
 					String pKey = matcher.group(1);
-					locations.add(new PlaceHolderLocation(document, key, placeholderMap.get(pKey)));
+					locations.add(new DocumentLocation(document, key, placeholderMap.get(pKey)));
 				}
 			}
 		}
 	}
 
-	/**
-	 * A class to bind data generators to a particular place in an existing
-	 * document.
-	 *
-	 * Used to avoid having to create a new object for every document (we can reuse
-	 * objects for efficiency).
-	 *
-	 * @author Mark Baker-Munton
-	 */
-	public static class PlaceHolderLocation {
-		BsonDocument document;
-		String key;
-		Placeholder placeholder;
+	private void parseArray(List<PlaceholderLocation> locations, BsonArray array) {
+		for (int i=0; i<array.size(); i++) {
+			BsonValue value = array.get(i);
+			if (value.isDocument()) {
+				parseDocument(locations, value.asDocument());
+			}
+			else if (value.isArray()) {
+				parseArray(locations, value.asArray());
+			}
+			else if (value.isString()) {
+				BsonString stringValue = value.asString();
+				Matcher matcher = pattern.matcher(stringValue.getValue());
 
-		public PlaceHolderLocation(BsonDocument document, String key, Placeholder placeholder) {
-			this.document = document;
-			this.key = key;
-			this.placeholder = placeholder;
+				// placeholder value ${xxx}
+				if (matcher.find()) {
+					String pKey = matcher.group(1);
+					locations.add(new ArrayLocation(array, i, placeholderMap.get(pKey)));
+				}
+			}
 		}
-
-		public void apply() {
-			document.put(key, placeholder.getValue());
-		}
-
-		public Placeholder getPlaceholder() {
-			return placeholder;
-		}
-
-		@Override
-		public String toString() {
-			return "PlaceHolderLocation [key=" + key + ", value=" + placeholder.toString() + "]";
-		}
-
 	}
+
+	
 
 }

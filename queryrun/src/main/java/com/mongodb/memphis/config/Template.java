@@ -67,38 +67,4 @@ public class Template extends Config {
 	public void execute() {
 	}
 
-	/**
-	 * A class to bind data generators to a particular place in an existing
-	 * document.
-	 *
-	 * Used to avoid having to create a new object for every document (we can reuse
-	 * objects for efficiency).
-	 *
-	 * @author Mark Baker-Munton
-	 */
-	public static class PlaceHolderLocation {
-		BsonDocument document;
-		String key;
-		Placeholder placeholder;
-
-		public PlaceHolderLocation(BsonDocument document, String key, Placeholder placeholder) {
-			this.document = document;
-			this.key = key;
-			this.placeholder = placeholder;
-		}
-
-		public void apply() {
-			document.put(key, placeholder.getValue());
-		}
-
-		public Placeholder getPlaceholder() {
-			return placeholder;
-		}
-
-		@Override
-		public String toString() {
-			return "PlaceHolderLocation [key=" + key + ", value=" + placeholder.toString() + "]";
-		}
-	}
-
 }
