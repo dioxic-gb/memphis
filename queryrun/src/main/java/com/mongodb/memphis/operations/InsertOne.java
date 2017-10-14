@@ -1,16 +1,15 @@
-package com.mongodb.memphis.config.operations;
+package com.mongodb.memphis.operations;
 
 import org.bson.BsonDocument;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.InsertOneOptions;
 import com.mongodb.memphis.annotations.Name;
-import com.mongodb.memphis.config.Operation;
 import com.mongodb.memphis.engine.Results;
 import com.mongodb.memphis.engine.SingleDocumentPool;
 
 @Name("insertOne")
-public class InsertOne extends Operation<SingleDocumentPool> {
+public class InsertOne extends DataOperation<SingleDocumentPool> {
 
 	private int totalDocuments;
 	private InsertOneOptions options;

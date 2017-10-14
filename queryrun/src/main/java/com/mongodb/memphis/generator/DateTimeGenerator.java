@@ -11,7 +11,7 @@ import com.mongodb.memphis.annotations.Name;
 
 @Name("datetime")
 public class DateTimeGenerator extends Generator {
-	
+
 	private static long NOW = Instant.now().toEpochMilli();
 
 	LocalDateTime min;
@@ -24,14 +24,15 @@ public class DateTimeGenerator extends Generator {
 		if (min != null) {
 			minLong = min.toInstant(ZoneOffset.UTC).toEpochMilli();
 		}
-		
+
 		if (max != null) {
-			maxLong = max.toInstant(ZoneOffset.UTC).toEpochMilli();	
+			maxLong = max.toInstant(ZoneOffset.UTC).toEpochMilli();
 		}
+		super.initialise();
 	}
 
 	@Override
-	public BsonValue nextValue() {
+	protected BsonValue generateValue() {
 		Double d = new Double(random.nextDouble() * (maxLong - minLong));
 		return new BsonDateTime(d.longValue() + minLong);
 	}

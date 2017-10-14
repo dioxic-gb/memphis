@@ -9,7 +9,7 @@ import com.mongodb.memphis.annotations.Name;
 public class StringDateGenerator extends Generator {
 
 	@Override
-	public BsonValue nextValue() {
+	protected BsonValue generateValue() {
 
 		int day = random.nextInt(28) + 1;
 		int year = random.nextInt(5) + 2015;

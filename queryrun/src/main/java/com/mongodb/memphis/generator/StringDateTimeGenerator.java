@@ -9,7 +9,7 @@ import com.mongodb.memphis.annotations.Name;
 public class StringDateTimeGenerator extends Generator {
 
     @Override
-	public BsonValue nextValue() {
+    protected BsonValue generateValue() {
         StringBuilder sb = new StringBuilder(10);
 
         sb.append(random.nextInt(33)+2017);

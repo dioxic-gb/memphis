@@ -1,0 +1,83 @@
+{
+  "mongoUri": "127.0.0.1",
+  "database": "comfone",
+  "collection": {
+    "name": "edtrs2",
+    "writeConcern": {
+      "w": "majority",
+      "journal": false
+    }
+  },
+  "tests": [
+    {
+      "name": "test1",
+      "stages": [
+        {
+          "name": "drop collection",
+          "operation": {
+            "type": "dropCollection"
+          }
+        },
+        {
+          "name": "create indexes",
+          "operation": {
+            "type": "createIndex",
+            "indexes": [
+              {
+                "keys": {
+                  "zt": 1,
+                  "pi": 1,
+                  "ts": 1
+                }
+              },
+              {
+                "keys": {
+                  "pi": 1,
+                  "ts": 1
+                }
+              },
+              {
+                "keys": {
+                  "ts": 1
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "insert some stuff",
+          "operation": {
+            "type": "insertMany",
+            "threads": 10,
+            "totalDocuments": 100000000,
+            "batchSize": 100,
+            "options": {
+              "ordered": false,
+              "bypassDocumentValidation": true
+            },
+            "templates": [
+              {
+                "templateFile": "templates/etdrs.json",
+                "placeholderFile": "example-placeholders.json",
+                "weighting": 10
+              }
+            ]
+          }
+        },
+        {
+          "name": "find some stuff",
+          "operation": {
+            "type": "find",
+            "iterations": 0,
+            "templates": [
+              {
+                "templateFile": "queries/test.json",
+                "placeholderFile": "example-placeholders.json"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,9 @@
 package com.mongodb.memphis.generator;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bson.BsonInt32;
 import org.bson.BsonValue;
 
@@ -13,14 +17,12 @@ public class IntegerGenerator extends Generator {
 	Integer[] list;
 
 	@Override
-	protected BsonValue nextValue() {
-		int value;
-		if (list != null) {
-			value = getRandomFromList(list);
-		}
-		else {
-			value = random.nextInt(max - min) + min;
-		}
-		return new BsonInt32(value);
+	protected List<BsonValue> getListValues() {
+		return list != null ? Arrays.stream(list).map(x -> new BsonInt32(x)).collect(Collectors.toList()) : null;
+	}
+
+	@Override
+	protected BsonValue generateValue() {
+		return new BsonInt32(random.nextInt(max - min) + min);
 	}
 }

@@ -1,4 +1,4 @@
-package com.mongodb.memphis.config.operations;
+package com.mongodb.memphis.operations;
 
 import org.bson.BsonDocument;
 import org.bson.RawBsonDocument;
@@ -8,12 +8,11 @@ import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.memphis.annotations.Name;
-import com.mongodb.memphis.config.Operation;
 import com.mongodb.memphis.engine.SingleDocumentPool;
 import com.mongodb.memphis.engine.Results;
 
 @Name("find")
-public class Find extends Operation<SingleDocumentPool> {
+public class Find extends DataOperation<SingleDocumentPool> {
 
 	private int iterations = 1;
 	private int limit = -1;

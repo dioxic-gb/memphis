@@ -1,4 +1,4 @@
-package com.mongodb.memphis.config;
+package com.mongodb.memphis.operations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +9,11 @@ import java.util.concurrent.Executors;
 import org.bson.BsonDocument;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.memphis.config.Template;
 import com.mongodb.memphis.engine.AbstractDocumentPool;
 import com.mongodb.memphis.engine.Results;
-import com.mongodb.memphis.util.StringUtils;
 
-public abstract class Operation<T extends AbstractDocumentPool> extends Config {
+public abstract class DataOperation<T extends AbstractDocumentPool> extends Operation {
 
 	protected int threads = 1;
 	protected List<Template> templates;
@@ -49,17 +49,13 @@ public abstract class Operation<T extends AbstractDocumentPool> extends Config {
 	protected abstract void execute(MongoCollection<BsonDocument> collection, T documentPool, Results results);
 
 	@Override
-	public void execute() {
-		logger.info("Operation {} starting", getClass().getSimpleName());
-
+	public void executeInternal() {
 		ExecutorService executor = Executors.newFixedThreadPool(threads);
 		List<Worker> tasks = new ArrayList<>(threads);
 
 		for (int i = 0; i < threads; i++) {
 			tasks.add(new Worker(i));
 		}
-
-		long startTime = System.currentTimeMillis();
 
 		try {
 			executor.invokeAll(tasks);
@@ -68,13 +64,9 @@ public abstract class Operation<T extends AbstractDocumentPool> extends Config {
 			throw new RuntimeException(e);
 		}
 
-		long totalTime = System.currentTimeMillis() - startTime;
-
 		executor.shutdown();
 
 		operationResults.printResults();
-
-		logger.info("Operation {} completed in {}", getClass().getSimpleName(), StringUtils.prettifyTime(totalTime));
 	}
 
 	class Worker implements Callable<Void> {

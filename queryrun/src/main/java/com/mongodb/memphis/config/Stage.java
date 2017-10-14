@@ -3,6 +3,8 @@ package com.mongodb.memphis.config;
 import java.util.Arrays;
 import java.util.List;
 
+import com.mongodb.memphis.operations.Operation;
+
 public class Stage extends Config {
 	private String name;
 	private Operation operation;
@@ -17,12 +19,17 @@ public class Stage extends Config {
 
 	@Override
 	public void execute() {
-		operation.execute();
+		if (operation != null) {
+			operation.execute();
+		}
+		else {
+			logger.warn("No operations to run for stage [{}]", name);
+		}
 	}
 
 	@Override
 	public List<Operation> getChildren() {
-		return Arrays.asList(operation);
+		return operation != null ? Arrays.asList(operation) : null;
 	}
 
 }

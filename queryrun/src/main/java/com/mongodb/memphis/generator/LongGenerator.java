@@ -1,5 +1,9 @@
 package com.mongodb.memphis.generator;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bson.BsonInt64;
 import org.bson.BsonValue;
 
@@ -8,19 +12,17 @@ import com.mongodb.memphis.annotations.Name;
 @Name("long")
 public class LongGenerator extends Generator {
 
-	private long min = Long.MIN_VALUE;
-	private long max = Long.MAX_VALUE;
-	private Long[] list;
+	long min = Long.MIN_VALUE;
+	long max = Long.MAX_VALUE;
+	Long[] list;
 
 	@Override
-	public BsonValue nextValue() {
-		long value;
-		if (list != null) {
-			value = getRandomFromList(list);
-		}
-		else {
-			value = new Double(random.nextDouble() * (max - min)).longValue() + min;
-		}
-		return new BsonInt64(value);
+	protected List<BsonValue> getListValues() {
+		return list != null ? Arrays.stream(list).map(x -> new BsonInt64(x)).collect(Collectors.toList()) : null;
+	}
+
+	@Override
+	public BsonValue generateValue() {
+		return new BsonInt64(new Double(random.nextDouble() * (max - min)).longValue() + min);
 	}
 }

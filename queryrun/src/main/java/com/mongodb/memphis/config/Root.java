@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.bson.conversions.Bson;
 import org.reflections.Reflections;
 
 import com.google.gson.Gson;
@@ -18,9 +19,12 @@ import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 import com.mongodb.memphis.annotations.Name;
+import com.mongodb.memphis.config.adapters.BsonTypeAdapter;
+import com.mongodb.memphis.config.adapters.IndexModelAdapterFactory;
 import com.mongodb.memphis.config.adapters.ReadConcernTypeAdapter;
 import com.mongodb.memphis.config.adapters.ReadPreferenceTypeAdapter;
 import com.mongodb.memphis.config.adapters.WriteConcernTypeAdapter;
+import com.mongodb.memphis.operations.Operation;
 
 public class Root extends Config {
 
@@ -43,9 +47,11 @@ public class Root extends Config {
 				.setPrettyPrinting()
 				//.excludeFieldsWithoutExposeAnnotation()
 				.registerTypeAdapterFactory(typeAdapterFactory)
+				.registerTypeAdapterFactory(new IndexModelAdapterFactory())
 				.registerTypeAdapter(WriteConcern.class, new WriteConcernTypeAdapter())
 				.registerTypeAdapter(ReadConcern.class, new ReadConcernTypeAdapter())
 				.registerTypeAdapter(ReadPreference.class, new ReadPreferenceTypeAdapter())
+				.registerTypeAdapter(Bson.class, new BsonTypeAdapter())
 				.create();
 	}
 

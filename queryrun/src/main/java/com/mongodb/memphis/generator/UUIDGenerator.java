@@ -11,7 +11,7 @@ import com.mongodb.memphis.annotations.Name;
 public class UUIDGenerator extends Generator {
 
 	@Override
-	public BsonValue nextValue() {
+	protected BsonValue generateValue() {
 		return new BsonString(UUID.randomUUID().toString());
 	}
 }

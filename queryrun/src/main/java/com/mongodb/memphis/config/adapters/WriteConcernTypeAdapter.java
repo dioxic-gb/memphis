@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 import com.mongodb.WriteConcern;
 
@@ -38,19 +39,19 @@ public class WriteConcernTypeAdapter extends TypeAdapter<WriteConcern> {
 	public WriteConcern read(JsonReader in) throws IOException {
 		WriteConcern wc = WriteConcern.UNACKNOWLEDGED;
 
-		switch (in.peek().name()) {
-		case "BEGIN_OBJECT":
+		switch (in.peek()) {
+		case BEGIN_OBJECT:
 			in.beginObject();
 			while (in.hasNext()) {
 				String wOption = in.nextName();
 				switch (wOption) {
 				case "w":
-					String wType = in.peek().name();
+					JsonToken wType = in.peek();
 					switch (wType) {
-					case "STRING":
+					case STRING:
 						wc = getWriteConcern(in.nextString());
 						break;
-					case "NUMBER":
+					case NUMBER:
 						wc = wc.withW(in.nextInt());
 						break;
 					default:
@@ -69,10 +70,10 @@ public class WriteConcernTypeAdapter extends TypeAdapter<WriteConcern> {
 			}
 			in.endObject();
 			break;
-		case "STRING":
+		case STRING:
 			wc = getWriteConcern(in.nextString());
 			break;
-		case "NUMBER":
+		case NUMBER:
 			wc = wc.withW(in.nextInt());
 			break;
 		default:

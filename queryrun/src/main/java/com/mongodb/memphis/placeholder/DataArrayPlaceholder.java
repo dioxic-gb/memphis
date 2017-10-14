@@ -39,7 +39,7 @@ public class DataArrayPlaceholder extends Generator {
 	}
 
 	@Override
-	protected BsonValue nextValue() {
+	protected BsonValue generateValue() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -18,7 +18,7 @@ public class DataPlaceholder extends Generator {
 	}
 
 	@Override
-	protected BsonValue nextValue() {
+	protected BsonValue generateValue() {
 		return population.getValue(queryKey);
 	}
 	

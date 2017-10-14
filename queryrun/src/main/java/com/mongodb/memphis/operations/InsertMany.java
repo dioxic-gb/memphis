@@ -1,16 +1,15 @@
-package com.mongodb.memphis.config.operations;
+package com.mongodb.memphis.operations;
 
 import org.bson.BsonDocument;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.InsertManyOptions;
 import com.mongodb.memphis.annotations.Name;
-import com.mongodb.memphis.config.Operation;
 import com.mongodb.memphis.engine.BatchDocumentPool;
 import com.mongodb.memphis.engine.Results;
 
 @Name("insertMany")
-public class InsertMany extends Operation<BatchDocumentPool> {
+public class InsertMany extends DataOperation<BatchDocumentPool> {
 
 	private int totalDocuments;
 	private int batchSize;
