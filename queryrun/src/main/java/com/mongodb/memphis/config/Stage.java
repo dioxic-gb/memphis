@@ -6,19 +6,14 @@ import java.util.List;
 import com.mongodb.memphis.operations.Operation;
 
 public class Stage extends Config {
-	private String name;
 	private Operation operation;
-
-	public String getName() {
-		return name;
-	}
 
 	public Operation getOperation() {
 		return operation;
 	}
 
 	@Override
-	public void execute() {
+	public void executeInternal() {
 		if (operation != null) {
 			operation.execute();
 		}

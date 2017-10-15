@@ -4,19 +4,14 @@ import java.util.List;
 
 public class Test extends Config {
 
-	private String name;
 	private List<Stage> stages;
-
-	public String getName() {
-		return name;
-	}
 
 	public List<Stage> getStages() {
 		return stages;
 	}
 
 	@Override
-	public void execute() {
+	public void executeInternal() {
 		for (Stage stage : stages) {
 			stage.execute();
 		}

@@ -25,6 +25,7 @@ import com.mongodb.memphis.config.adapters.ReadConcernTypeAdapter;
 import com.mongodb.memphis.config.adapters.ReadPreferenceTypeAdapter;
 import com.mongodb.memphis.config.adapters.WriteConcernTypeAdapter;
 import com.mongodb.memphis.operations.Operation;
+import com.mongodb.memphis.operations.SampleData;
 
 public class Root extends Config {
 
@@ -57,6 +58,7 @@ public class Root extends Config {
 
 	private String mongoUri;
 	private List<Test> tests;
+	private List<SampleData> samplers;
 
 	private transient MongoClient client;
 
@@ -69,6 +71,10 @@ public class Root extends Config {
 		return tests;
 	}
 
+	public List<SampleData> getSamplers() {
+		return samplers;
+	}
+
 	@Override
 	public void initialise() {
 		// set timeout to 1hr
@@ -79,11 +85,11 @@ public class Root extends Config {
 
 		client = new MongoClient(new MongoClientURI("mongodb://" + mongoUri, builder));
 
-		super.initialiseHierarchy(null);
+		super.initialiseHierarchy(null, 0);
 	}
 
 	@Override
-	public void execute() {
+	protected void executeInternal() {
 		try {
 			for (Test test : tests) {
 				test.execute();

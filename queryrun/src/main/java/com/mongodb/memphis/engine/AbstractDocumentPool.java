@@ -45,7 +45,7 @@ public class AbstractDocumentPool {
 		for (int i = 0; i < poolSize; i++) {
 
 			// switch to the next template in the list
-			if (docCount > docLimit && templateIndex < templates.size()) {
+			if (docCount >= docLimit && templateIndex < templates.size()) {
 				templateIndex++;
 				template = templates.get(templateIndex);
 				docLimit = poolSize * template.getWeighting() / totalWeight;
@@ -79,9 +79,9 @@ public class AbstractDocumentPool {
 	 *
 	 * Called prior to executing an operation.
 	 */
-	public void regenerateValues() {
+	public void regenerateValues(int iteration) {
 		for (Placeholder placeholder : placeholders) {
-			placeholder.nextBatch();
+			placeholder.nextBatch(iteration);
 		}
 		for (PlaceholderLocation locator : placeholderLocations) {
 			locator.apply();

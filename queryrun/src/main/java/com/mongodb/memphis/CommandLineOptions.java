@@ -17,8 +17,8 @@ public class CommandLineOptions {
 	private final boolean helpOnly = false;
 	private final Logger logger;
 	private String configFile;
-	private Root config;
 	private boolean debug;
+	private boolean trace;
 
 	public CommandLineOptions(String[] args) throws ParseException {
 		logger = LoggerFactory.getLogger(CommandLineOptions.class);
@@ -32,6 +32,7 @@ public class CommandLineOptions {
 		cliopt.addOption("h", "help", false, "Show Help");
 		cliopt.addOption("c", "config", true, "config file");
 		cliopt.addOption("d", "debug", false, "debug outputs");
+		cliopt.addOption("t", "trace", false, "trace outputs");
 
 		CommandLine cmd = parser.parse(cliopt, args);
 
@@ -51,10 +52,18 @@ public class CommandLineOptions {
 		if (cmd.hasOption("d")) {
 			debug = true;
 		}
+
+		if (cmd.hasOption("t")) {
+			trace = true;
+		}
 	}
 
 	public boolean isDebug() {
 		return debug;
+	}
+
+	public boolean isTrace() {
+		return trace;
 	}
 
 	public Root getConfig() throws IOException {

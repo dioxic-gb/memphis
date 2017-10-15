@@ -6,31 +6,23 @@ import java.util.Random;
 
 import org.bson.BsonValue;
 
-import com.mongodb.memphis.data.Population;
+import com.mongodb.memphis.data.DataCache;
 import com.mongodb.memphis.placeholder.Placeholder;
 
 public abstract class Generator extends Placeholder implements Cloneable {
 
-	protected Population population;
-	protected String queryKey;
 	protected boolean batchMode = false;
 	protected int uniqueValues;
+	private String fieldKey;
+	private String cacheKey;
 
 	private transient List<BsonValue> valueCache;
 	private transient BsonValue currentValue;
 	protected transient final Random random = new Random();
 
-	public void setPopulation(Population population) {
-		this.population = population;
-	}
-
-	public void setQueryKey(String queryKey) {
-		this.queryKey = queryKey;
-	}
-
 	@Override
 	public BsonValue getValue() {
-		if (!batchMode || currentValue == null) {
+		if (!batchMode && cacheKey == null) {
 			currentValue = getNextValue();
 		}
 		return currentValue;
@@ -47,8 +39,14 @@ public abstract class Generator extends Placeholder implements Cloneable {
 	}
 
 	@Override
-	public void nextBatch() {
-		if (batchMode) {
+	public void nextBatch(int iteration) {
+		if (cacheKey != null) {
+			currentValue = DataCache.getValue(cacheKey, fieldKey, Thread.currentThread(), iteration);
+			if (currentValue == null) {
+				throw new IllegalStateException("Could not find fieldKey:" + fieldKey + " in data cache " + cacheKey);
+			}
+		}
+		else if (batchMode) {
 			currentValue = getNextValue();
 		}
 	}

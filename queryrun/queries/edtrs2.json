@@ -1,0 +1,7 @@
+{
+  "ts": {
+    "$lt": "${date}"
+  },
+  "pi": "${profile}",
+  "et": "${protocol}"
+}

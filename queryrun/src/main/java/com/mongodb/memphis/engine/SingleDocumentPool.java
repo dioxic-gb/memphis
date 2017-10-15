@@ -1,10 +1,8 @@
 package com.mongodb.memphis.engine;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.bson.BsonDocument;
 import org.bson.RawBsonDocument;
@@ -28,14 +26,14 @@ public class SingleDocumentPool extends AbstractDocumentPool  {
 		if (currentDocumentIndex == poolSize) {
 			currentDocumentIndex = 0;
 		}
-		
+
 		return getCurrentDocument();
 	}
-	
+
 	public BsonDocument getCurrentDocument() {
 		return documents.get(currentDocumentIndex);
 	}
-	
+
 	/**
 	 * Calculates the current document size (i.e. the document last returned by the GetNextDocument method.
 	 * <p>
@@ -46,12 +44,12 @@ public class SingleDocumentPool extends AbstractDocumentPool  {
 	 */
 	public long getCurrentDocumentSize() {
 		Long currentDocSize = documentSizes.get(getCurrentDocument());
-		
+
 		if (currentDocSize == null) {
 			currentDocSize = new Long(new RawBsonDocument(getCurrentDocument(), new BsonDocumentCodec()).getByteBuffer().limit());
 			documentSizes.put(getCurrentDocument(), currentDocSize);
 		}
-		
+
 		return currentDocSize;
 	}
 

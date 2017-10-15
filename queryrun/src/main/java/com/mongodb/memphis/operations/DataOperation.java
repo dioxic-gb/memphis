@@ -84,9 +84,9 @@ public abstract class DataOperation<T extends AbstractDocumentPool> extends Oper
 				MongoCollection<BsonDocument> collection = getMongoCollection();
 
 				for (int counter = 0; counter < getIterations(); counter++) {
-					logger.trace("Thread {} running insert iteration {}", threadNum, counter);
+					logger.trace("Thread {} running operation iteration {}", threadNum, counter);
 
-					docPool.regenerateValues();
+					docPool.regenerateValues(counter);
 
 					long startTime = System.currentTimeMillis();
 					execute(collection, docPool, operationResults);

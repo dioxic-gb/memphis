@@ -4,20 +4,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.regex.Pattern;
 
 import org.bson.BsonDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.mongodb.memphis.placeholder.Placeholder;
 import com.mongodb.memphis.placeholder.PlaceholderFactory;
 import com.mongodb.memphis.placeholder.PlaceholderParser;
 
 public class Template extends Config {
-	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private final Pattern pattern = Pattern.compile("\\$\\{(.+)\\}");
-
 	private String templateFile;
 	private String placeholderFile;
 	private int weighting = 1;
@@ -64,7 +57,7 @@ public class Template extends Config {
 	}
 
 	@Override
-	public void execute() {
+	public void executeInternal() {
 	}
 
 }
