@@ -1,8 +1,0 @@
-{
-	"party.partyId" : "#data(nonpublicExecutionReport.party.@id)",
-	"trade.tradeId" : "123",
-	"msgId" : "#data",
-	"party.person" : ["john","mary","jones","jennifer","esther","eddie","gary","alice","alex"],
-	"trade.assetClass" : [ "Credit","InterestRate","Commodity","Equity","ForeignExchange" ],
-	"tradeId.array": "#arraydata(10,index.tradetradeId)"
-}

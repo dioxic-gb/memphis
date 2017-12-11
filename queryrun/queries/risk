@@ -1,1 +1,0 @@
-find({"valuationDate":"20170101","validTo":{$gt:NumberLong(20170101120000)},"validFrom":"20170101120000"})

@@ -1,4 +1,0 @@
-aggregate([
-	{ $match: {"nonpublicExecutionReport.party": { $elemMatch: { "@id": "${party.partyId}", "partyId._text": "PY442252"} } } },
-	{ $project: {"index.tradetradeId": 1, "index.tradeprice": 1, _id: 0} }
-])

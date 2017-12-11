@@ -1,8 +1,0 @@
-{
-  "ts": {
-    "$lt": "${date}"
-  },
-  "zt": "${remotePartner}",
-  "pi": "${profile}",
-  "et": "${protocol}"
-}
