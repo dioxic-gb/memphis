@@ -20,14 +20,14 @@ public abstract class Config {
 	private String database;
 	private Collection collection;
 
-	public String getDatabase() {
+	public final String getDatabase() {
 		if (database == null) {
 			database = parent.getDatabase();
 		}
 		return database;
 	}
 
-	public Collection getCollection() {
+	public final Collection getCollection() {
 		if (collection == null) {
 			collection = parent.getCollection();
 		}

@@ -5,11 +5,11 @@ import org.bson.BsonDocument;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.InsertOneOptions;
 import com.mongodb.memphis.annotations.Name;
+import com.mongodb.memphis.engine.DocumentPool;
 import com.mongodb.memphis.engine.Results;
-import com.mongodb.memphis.engine.SingleDocumentPool;
 
 @Name("insertOne")
-public class InsertOne extends DataOperation<SingleDocumentPool> {
+public class InsertOne extends DataOperation {
 
 	private int totalDocuments;
 	private InsertOneOptions options;
@@ -28,15 +28,15 @@ public class InsertOne extends DataOperation<SingleDocumentPool> {
 	}
 
 	@Override
-	protected void execute(MongoCollection<BsonDocument> collection, SingleDocumentPool documentPool, Results results) {
-		collection.insertOne(documentPool.getNextDocument(), options);
-		results.bytesWritten(documentPool.getCurrentDocumentSize());
+	protected void execute(MongoCollection<BsonDocument> collection, DocumentPool documentPool, Results results) {
+		collection.insertOne(documentPool.getDocument(), options);
+		results.bytesWritten(documentPool.getBatchSize());
 		results.docsWritten(1);
 	}
 
 	@Override
-	protected SingleDocumentPool createDocumentPool() {
-		return new SingleDocumentPool(templates);
+	protected DocumentPool createDocumentPool() {
+		return new DocumentPool(templates, 1);
 	}
 
 }

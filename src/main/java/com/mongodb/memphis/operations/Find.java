@@ -8,11 +8,11 @@ import com.mongodb.Block;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.memphis.annotations.Name;
+import com.mongodb.memphis.engine.DocumentPool;
 import com.mongodb.memphis.engine.Results;
-import com.mongodb.memphis.engine.SingleDocumentPool;
 
 @Name("find")
-public class Find extends DataOperation<SingleDocumentPool> {
+public class Find extends DataOperation {
 
 	private int iterations = 1;
 	private int limit = -1;
@@ -25,8 +25,8 @@ public class Find extends DataOperation<SingleDocumentPool> {
 	}
 
 	@Override
-	protected void execute(MongoCollection<BsonDocument> collection, SingleDocumentPool documentPool, Results results) {
-		BsonDocument queryDoc = documentPool.getNextDocument();
+	protected void execute(MongoCollection<BsonDocument> collection, DocumentPool documentPool, Results results) {
+		BsonDocument queryDoc = documentPool.getDocument();
 		FindIterable<RawBsonDocument> cursor = collection.find(queryDoc, RawBsonDocument.class);
 
 		logger.trace("running {}.find({})", collection.getNamespace(), queryDoc.toJson());
@@ -54,8 +54,8 @@ public class Find extends DataOperation<SingleDocumentPool> {
 	}
 
 	@Override
-	protected SingleDocumentPool createDocumentPool() {
-		return new SingleDocumentPool(templates);
+	protected DocumentPool createDocumentPool() {
+		return new DocumentPool(templates, 1);
 	}
 
 }

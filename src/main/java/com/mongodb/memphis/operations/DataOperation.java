@@ -10,10 +10,10 @@ import org.bson.BsonDocument;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.memphis.config.Template;
-import com.mongodb.memphis.engine.AbstractDocumentPool;
+import com.mongodb.memphis.engine.DocumentPool;
 import com.mongodb.memphis.engine.Results;
 
-public abstract class DataOperation<T extends AbstractDocumentPool> extends Operation {
+public abstract class DataOperation extends Operation {
 
 	protected int threads = 1;
 	protected List<Template> templates;
@@ -44,9 +44,9 @@ public abstract class DataOperation<T extends AbstractDocumentPool> extends Oper
 
 	protected abstract int getIterations();
 
-	protected abstract T createDocumentPool();
+	protected abstract DocumentPool createDocumentPool();
 
-	protected abstract void execute(MongoCollection<BsonDocument> collection, T documentPool, Results results);
+	protected abstract void execute(MongoCollection<BsonDocument> collection, DocumentPool documentPool, Results results);
 
 	@Override
 	public void executeInternal() {
@@ -80,13 +80,15 @@ public abstract class DataOperation<T extends AbstractDocumentPool> extends Oper
 		public Void call() throws Exception {
 			logger.debug("Thread {} starting", threadNum);
 			try {
-				T docPool = createDocumentPool();
+				DocumentPool docPool = createDocumentPool();
 				MongoCollection<BsonDocument> collection = getMongoCollection();
+
+				docPool.initialise();
 
 				for (int counter = 0; counter < getIterations(); counter++) {
 					logger.trace("Thread {} running operation iteration {}", threadNum, counter);
 
-					docPool.regenerateValues(counter);
+					docPool.nextBatch(counter);
 
 					long startTime = System.currentTimeMillis();
 					execute(collection, docPool, operationResults);

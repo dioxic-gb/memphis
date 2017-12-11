@@ -30,6 +30,18 @@ public class Template extends Config {
 		return template;
 	}
 
+	public void setPlaceholderFile(String placeholderFile) {
+		this.placeholderFile = placeholderFile;
+	}
+
+	public void setWeighting(int weighting) {
+		this.weighting = weighting;
+	}
+
+	public void setTemplate(BsonDocument template) {
+		this.template = template;
+	}
+
 	@Override
 	public void initialise() {
 		Path templatePath = Paths.get(templateFile);
@@ -53,7 +65,7 @@ public class Template extends Config {
 	}
 
 	public PlaceholderParser createPlaceholderParser() {
-		return placeholderFactory.create();
+		return placeholderFactory != null ? placeholderFactory.create() : null;
 	}
 
 	@Override

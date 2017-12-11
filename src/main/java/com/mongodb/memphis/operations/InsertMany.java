@@ -5,11 +5,11 @@ import org.bson.BsonDocument;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.InsertManyOptions;
 import com.mongodb.memphis.annotations.Name;
-import com.mongodb.memphis.engine.BatchDocumentPool;
+import com.mongodb.memphis.engine.DocumentPool;
 import com.mongodb.memphis.engine.Results;
 
 @Name("insertMany")
-public class InsertMany extends DataOperation<BatchDocumentPool> {
+public class InsertMany extends DataOperation {
 
 	private int totalDocuments;
 	private int batchSize;
@@ -33,15 +33,15 @@ public class InsertMany extends DataOperation<BatchDocumentPool> {
 	}
 
 	@Override
-	protected void execute(MongoCollection<BsonDocument> collection, BatchDocumentPool documentPool, Results results) {
-		collection.insertMany(documentPool.getDocuments(), options);
-		results.bytesWritten(documentPool.getAverageDocumentSize() * batchSize);
+	protected void execute(MongoCollection<BsonDocument> collection, DocumentPool documentPool, Results results) {
+		collection.insertMany(documentPool.getBatchDocuments(), options);
+		results.bytesWritten(documentPool.getBatchSize());
 		results.docsWritten(batchSize);
 	}
 
 	@Override
-	protected BatchDocumentPool createDocumentPool() {
-		return new BatchDocumentPool(templates, batchSize);
+	protected DocumentPool createDocumentPool() {
+		return new DocumentPool(templates, batchSize);
 	}
 
 }

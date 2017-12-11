@@ -1,6 +1,7 @@
 package com.mongodb.memphis.placeholder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -37,7 +38,7 @@ public class PlaceholderParser {
 		this.placeholderMap = placeholderMap;
 	}
 
-	public java.util.Collection<Placeholder> getPlaceholders() {
+	public Collection<Placeholder> getPlaceholders() {
 		return placeholderMap.values();
 	}
 
@@ -98,6 +99,6 @@ public class PlaceholderParser {
 		}
 	}
 
-	
+
 
 }
