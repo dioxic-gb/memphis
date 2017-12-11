@@ -39,10 +39,10 @@ public class DocumentPoolTest {
 
 		for (Template template : templates) {
 			String key = template.getTemplate().get("k").asString().getValue();
-			assertThat(counted.get(template)).as("template " + key + " count").isEqualTo(docPool.pool.size() * template.getWeighting() / totalWeights);
+			assertThat(counted.get(template)).as("template " + key + " count").isEqualTo(weightedTemplates.size() * template.getWeighting() / totalWeights);
 		}
 
-		System.out.println("poolSize: " + docPool.pool.size());
+		System.out.println("poolSize: " + weightedTemplates.size());
 		//weightedTemplates.stream().map(Template::getTemplate).forEach(System.out::println);
 	}
 
