@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.reflections.Reflections;
@@ -21,9 +22,10 @@ import com.mongodb.memphis.config.adapters.LocalDateTimeTypeAdapter;
 public class PlaceholderFactory {
 	private final static Logger logger = LoggerFactory.getLogger(PlaceholderFactory.class);
 
-	private String placeholderJson;
+	private Map<String, PlaceholderParser> parserMap;
 
 	private static Gson gson;
+	private static PlaceholderFactory instance;
 
 	static {
 		Reflections reflections = new Reflections("com.mongodb.memphis");
@@ -45,13 +47,36 @@ public class PlaceholderFactory {
 				.create();
 	}
 
-	public PlaceholderFactory(String placeholderJson) {
-		this.placeholderJson = placeholderJson;
+	private PlaceholderFactory() {
+		parserMap = new HashMap<>();
 	}
 
-	public static PlaceholderFactory load(String placeholderFile) {
+	public static PlaceholderFactory getInstance() {
+		if (instance == null) {
+			instance = new PlaceholderFactory();
+		}
+		return instance;
+	}
+
+	public void load(String placeholderFile) {
 		try {
-			return new PlaceholderFactory(new String(Files.readAllBytes(Paths.get(placeholderFile)), StandardCharsets.UTF_8));
+			PlaceholderParser parser = parserMap.get(placeholderFile);
+
+			if (parser == null) {
+				logger.debug("loading placeholder file {}", placeholderFile);
+				String json = new String(Files.readAllBytes(Paths.get(placeholderFile)), StandardCharsets.UTF_8);
+
+				// use gson to parse the placeholder json
+				Map<String, Placeholder> placeholderMap = gson.fromJson(json, new TypeToken<Map<String, Placeholder>>() {
+				}.getType());
+
+				// initialise placeholders
+				for (Placeholder placeholder : placeholderMap.values()) {
+					placeholder.initialise();
+				}
+
+				parserMap.put(placeholderFile, new PlaceholderParser(placeholderMap));
+			}
 		}
 		catch (IOException e) {
 			logger.error("{} - could not parse placeholder file {}", e.getClass().getSimpleName(), placeholderFile);
@@ -59,21 +84,8 @@ public class PlaceholderFactory {
 		}
 	}
 
-	public PlaceholderParser create() {
-		// use gson to parse the placeholder json
-		Map<String, Placeholder> placeholderMap = gson.fromJson(placeholderJson, new TypeToken<Map<String, Placeholder>>() {
-		}.getType());
-
-		// initialise placeholders
-		for (Placeholder placeholder : placeholderMap.values()) {
-			placeholder.initialise();
-		}
-		return new PlaceholderParser(placeholderMap);
-	}
-
-	@Override
-	public String toString() {
-		return gson.toJson(this);
+	public PlaceholderParser getParser(String placeholderFile) {
+		return parserMap.get(placeholderFile);
 	}
 
 }

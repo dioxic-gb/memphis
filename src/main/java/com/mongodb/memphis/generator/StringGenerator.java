@@ -18,14 +18,14 @@ public class StringGenerator extends Generator {
 
 	@Override
 	protected List<BsonValue> getListValues() {
-		return list != null ? Arrays.stream(list).map(x -> new BsonString(x)).collect(Collectors.toList()) : null;
+		return list != null ? Arrays.stream(list).map(BsonString::new).collect(Collectors.toList()) : null;
 	}
 
 	@Override
 	protected BsonValue generateValue() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < length; i++) {
-			sb.append(saltChars.charAt(random.nextInt(saltChars.length())));
+			sb.append(saltChars.charAt(random().nextInt(saltChars.length())));
 		}
 		return new BsonString(sb.toString());
 	}

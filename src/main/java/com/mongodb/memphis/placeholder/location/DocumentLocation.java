@@ -1,6 +1,7 @@
 package com.mongodb.memphis.placeholder.location;
 
 import org.bson.BsonDocument;
+import org.bson.BsonValue;
 
 import com.mongodb.memphis.placeholder.Placeholder;
 
@@ -26,7 +27,12 @@ public class DocumentLocation implements PlaceholderLocation {
 
 	@Override
 	public void apply() {
-		document.put(key, placeholder.getValue());
+		apply(placeholder.getValue());
+	}
+
+	@Override
+	public void apply(BsonValue value) {
+		document.put(key, value);
 	}
 
 	@Override

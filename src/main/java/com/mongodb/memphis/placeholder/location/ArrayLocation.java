@@ -1,7 +1,7 @@
 package com.mongodb.memphis.placeholder.location;
 
 import org.bson.BsonArray;
-import org.bson.BsonDocument;
+import org.bson.BsonValue;
 
 import com.mongodb.memphis.placeholder.Placeholder;
 
@@ -18,7 +18,12 @@ public class ArrayLocation implements PlaceholderLocation {
 
 	@Override
 	public void apply() {
-		array.set(index, placeholder.getValue());
+		apply(placeholder.getValue());
+	}
+
+	@Override
+	public void apply(BsonValue value) {
+		array.set(index, value);
 	}
 
 	@Override

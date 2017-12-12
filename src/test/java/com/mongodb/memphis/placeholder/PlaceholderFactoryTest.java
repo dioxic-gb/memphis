@@ -10,7 +10,8 @@ public class PlaceholderFactoryTest {
 
 	@Test
 	public void load() {
-		PlaceholderFactory factory = PlaceholderFactory.load("src/test/resources/test-placeholders.json");
+		PlaceholderFactory factory = PlaceholderFactory.getInstance();
+		factory.load("src/test/resources/test-placeholders.json");
 
 		logger.info(factory.toString());
 	}

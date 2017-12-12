@@ -18,11 +18,11 @@ public class LongGenerator extends Generator {
 
 	@Override
 	protected List<BsonValue> getListValues() {
-		return list != null ? Arrays.stream(list).map(x -> new BsonInt64(x)).collect(Collectors.toList()) : null;
+		return list != null ? Arrays.stream(list).map(BsonInt64::new).collect(Collectors.toList()) : null;
 	}
 
 	@Override
 	public BsonValue generateValue() {
-		return new BsonInt64(new Double(random.nextDouble() * (max - min)).longValue() + min);
+		return new BsonInt64(new Double(random().nextDouble() * (max - min)).longValue() + min);
 	}
 }

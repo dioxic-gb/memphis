@@ -6,7 +6,8 @@ import org.slf4j.LoggerFactory;
 
 public abstract class Placeholder {
 
-	protected Logger logger = LoggerFactory.getLogger(getClass());
+	protected transient Logger logger = LoggerFactory.getLogger(getClass());
+	private Mode mode = Mode.DEFAULT;
 
 	public void initialise() {
 	}
@@ -14,6 +15,16 @@ public abstract class Placeholder {
 	public abstract BsonValue getValue();
 
 	public void nextBatch(int iteration) {
+	}
+
+	public Mode getMode() {
+		return mode;
+	}
+
+	public enum Mode {
+		BATCH,
+		DOCUMENT,
+		DEFAULT
 	}
 
 }

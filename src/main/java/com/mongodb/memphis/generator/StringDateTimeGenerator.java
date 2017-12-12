@@ -12,15 +12,15 @@ public class StringDateTimeGenerator extends Generator {
     protected BsonValue generateValue() {
         StringBuilder sb = new StringBuilder(10);
 
-        sb.append(random.nextInt(33)+2017);
+        sb.append(random().nextInt(33)+2017);
         sb.append('-');
-        int month = random.nextInt(12)+1;
+        int month = random().nextInt(12)+1;
         if (month < 10) {
             sb.append(0);
         }
         sb.append(month);
         sb.append('-');
-        int day = random.nextInt(28)+1;
+        int day = random().nextInt(28)+1;
         if (day < 10) {
             sb.append(0);
         }

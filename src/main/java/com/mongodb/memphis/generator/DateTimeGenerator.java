@@ -33,7 +33,7 @@ public class DateTimeGenerator extends Generator {
 
 	@Override
 	protected BsonValue generateValue() {
-		Double d = new Double(random.nextDouble() * (maxLong - minLong));
+		Double d = new Double(random().nextDouble() * (maxLong - minLong));
 		return new BsonDateTime(d.longValue() + minLong);
 	}
 

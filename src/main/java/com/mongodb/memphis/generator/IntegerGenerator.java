@@ -18,11 +18,11 @@ public class IntegerGenerator extends Generator {
 
 	@Override
 	protected List<BsonValue> getListValues() {
-		return list != null ? Arrays.stream(list).map(x -> new BsonInt32(x)).collect(Collectors.toList()) : null;
+		return list != null ? Arrays.stream(list).map(BsonInt32::new).collect(Collectors.toList()) : null;
 	}
 
 	@Override
 	protected BsonValue generateValue() {
-		return new BsonInt32(random.nextInt(max - min) + min);
+		return new BsonInt32(random().nextInt(max - min) + min);
 	}
 }

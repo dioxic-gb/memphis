@@ -18,12 +18,12 @@ public class DoubleGenerator extends Generator {
 
 	@Override
 	protected List<BsonValue> getListValues() {
-		return list != null ? Arrays.stream(list).map(x -> new BsonDouble(x)).collect(Collectors.toList()) : null;
+		return list != null ? Arrays.stream(list).map(BsonDouble::new).collect(Collectors.toList()) : null;
 	}
 
 	@Override
 	protected BsonValue generateValue() {
-		return new BsonDouble(random.nextDouble() * (max - min) + min);
+		return new BsonDouble(random().nextDouble() * (max - min) + min);
 	}
 
 }

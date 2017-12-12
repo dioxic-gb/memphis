@@ -2,6 +2,7 @@ package com.mongodb.memphis.placeholder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -14,7 +15,7 @@ import org.bson.BsonValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mongodb.annotations.NotThreadSafe;
+import com.mongodb.annotations.ThreadSafe;
 import com.mongodb.memphis.placeholder.location.ArrayLocation;
 import com.mongodb.memphis.placeholder.location.DocumentLocation;
 import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
@@ -27,15 +28,15 @@ import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
  *
  * @author Mark Baker-Munton
  */
-@NotThreadSafe
+@ThreadSafe
 public class PlaceholderParser {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final Pattern pattern = Pattern.compile("\\$\\{(.+)\\}");
 
-	private Map<String, Placeholder> placeholderMap;
+	private final Map<String, Placeholder> placeholderMap;
 
 	public PlaceholderParser(Map<String, Placeholder> placeholderMap) {
-		this.placeholderMap = placeholderMap;
+		this.placeholderMap = Collections.unmodifiableMap(placeholderMap);
 	}
 
 	public Collection<Placeholder> getPlaceholders() {

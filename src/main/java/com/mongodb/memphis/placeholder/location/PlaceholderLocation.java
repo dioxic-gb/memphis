@@ -1,5 +1,7 @@
 package com.mongodb.memphis.placeholder.location;
 
+import org.bson.BsonValue;
+
 import com.mongodb.memphis.placeholder.Placeholder;
 
 /**
@@ -14,6 +16,8 @@ import com.mongodb.memphis.placeholder.Placeholder;
 public interface PlaceholderLocation {
 
 	void apply();
+
+	void apply(BsonValue value);
 
 	Placeholder getPlaceholder();
 
