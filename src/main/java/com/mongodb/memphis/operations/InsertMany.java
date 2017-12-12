@@ -29,6 +29,10 @@ public class InsertMany extends DataOperation {
 
 	@Override
 	public int getIterations() {
+		if (batchSize > totalDocuments / getThreads()) {
+			batchSize = totalDocuments / getThreads();
+			logger.debug("reducing batchsize to {}", batchSize);
+		}
 		return totalDocuments / batchSize / getThreads();
 	}
 
