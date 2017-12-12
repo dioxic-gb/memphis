@@ -10,7 +10,7 @@ import org.bson.BsonValue;
 
 import com.mongodb.memphis.placeholder.Placeholder;
 
-public abstract class Generator extends Placeholder implements Cloneable {
+public abstract class Generator extends Placeholder {
 
 	protected int cardinality;
 	private String fieldKey;
