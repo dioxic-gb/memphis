@@ -13,7 +13,7 @@ import com.mongodb.memphis.placeholder.Placeholder;
 
 public abstract class Generator extends Placeholder {
 	protected int cardinality;
-	protected Mode mode = Mode.DEFAULT;
+	protected Scope scope = Scope.DEFAULT;
 	private String fieldKey;
 	private String cacheKey;
 
@@ -55,8 +55,8 @@ public abstract class Generator extends Placeholder {
 	// }
 
 	@Override
-	public Mode getMode() {
-		return mode;
+	public Scope getScope() {
+		return scope;
 	}
 
 	@Override

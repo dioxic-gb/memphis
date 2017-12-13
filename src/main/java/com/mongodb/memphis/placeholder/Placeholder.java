@@ -14,7 +14,9 @@ public abstract class Placeholder implements Comparable<Placeholder> {
 	public void initialise() {
 	}
 
-	public abstract Mode getMode();
+	public Scope getScope() {
+		return Scope.DEFAULT;
+	};
 
 	public abstract BsonValue getValue(EngineDocument engineDocument);
 
@@ -27,7 +29,7 @@ public abstract class Placeholder implements Comparable<Placeholder> {
 		return priority;
 	}
 
-	public enum Mode {
+	public enum Scope {
 		BATCH,
 		DOCUMENT,
 		DEFAULT

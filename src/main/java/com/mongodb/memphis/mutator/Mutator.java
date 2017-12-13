@@ -1,4 +1,4 @@
-package com.mongodb.memphis.mutators;
+package com.mongodb.memphis.mutator;
 
 import org.bson.BsonValue;
 
@@ -11,11 +11,6 @@ public abstract class Mutator extends Placeholder {
 	@Override
 	public void initialise() {
 		priority = 0;
-	}
-
-	@Override
-	public Mode getMode() {
-		return Mode.DEFAULT;
 	}
 
 	@Override

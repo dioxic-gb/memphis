@@ -14,7 +14,7 @@ import org.bson.codecs.BsonDocumentCodec;
 import com.mongodb.memphis.config.Template;
 import com.mongodb.memphis.engine.DocumentPool.Batch;
 import com.mongodb.memphis.placeholder.Placeholder;
-import com.mongodb.memphis.placeholder.Placeholder.Mode;
+import com.mongodb.memphis.placeholder.Placeholder.Scope;
 import com.mongodb.memphis.placeholder.PlaceholderParser;
 import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
 
@@ -53,7 +53,7 @@ public class EngineDocument {
 	public void regenerateValues(Batch batch) {
 		// cache values for placeholders in DOCUMENT mode
 		for (Placeholder p : placeholders) {
-			if (p.getMode() == Mode.DOCUMENT) {
+			if (p.getScope() == Scope.DOCUMENT) {
 				// lazy load map for efficiency - mostly this won't be used
 				if (placeholderValues == null) {
 					placeholderValues = new HashMap<>(placeholders.size());
@@ -65,7 +65,7 @@ public class EngineDocument {
 		// apply values to locators
 		for (PlaceholderLocation locator : placeholderLocations) {
 			Placeholder p = locator.getPlaceholder();
-			switch (p.getMode()) {
+			switch (p.getScope()) {
 			case BATCH:
 				batch.applyCachedValue(locator);
 				break;

@@ -14,7 +14,7 @@ import org.bson.BsonValue;
 
 import com.mongodb.memphis.config.Template;
 import com.mongodb.memphis.placeholder.Placeholder;
-import com.mongodb.memphis.placeholder.Placeholder.Mode;
+import com.mongodb.memphis.placeholder.Placeholder.Scope;
 import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
 
 public class DocumentPool {
@@ -150,7 +150,7 @@ public class DocumentPool {
 
 		private void regenerateValues() {
 			for (Placeholder p : placeholders) {
-				if (p.getMode() == Mode.BATCH) {
+				if (p.getScope() == Scope.BATCH) {
 					placeholderValues.put(p, p.getValue());
 				}
 			}
