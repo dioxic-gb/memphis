@@ -4,21 +4,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 import org.bson.BsonDocument;
 
-import com.mongodb.memphis.placeholder.Placeholder;
 import com.mongodb.memphis.placeholder.PlaceholderFactory;
 import com.mongodb.memphis.placeholder.PlaceholderParser;
-import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
 
 public class Template extends Config {
 	private String templateFile;
 	private String placeholderFile;
 	private int weighting = 1;
 
-	private transient BsonDocument template;
+	private transient BsonDocument referenceDocument;
+	private transient Integer documentSize;
 
 	public final String getTemplateFile() {
 		return templateFile;
@@ -28,12 +26,8 @@ public class Template extends Config {
 		return weighting;
 	}
 
-	public final BsonDocument getTemplate() {
-		return template;
-	}
-
-	public BsonDocument cloneDocument() {
-		return template.clone();
+	public final BsonDocument getReferenceDocument() {
+		return referenceDocument;
 	}
 
 	public void setPlaceholderFile(String placeholderFile) {
@@ -45,18 +39,18 @@ public class Template extends Config {
 	}
 
 	public void setTemplate(BsonDocument template) {
-		this.template = template;
+		this.referenceDocument = template;
 	}
 
-	public List<PlaceholderLocation> parseDocument(BsonDocument document) {
-		return parser().parseDocument(document);
+	public Integer getDocumentSize() {
+		return documentSize;
 	}
 
-	public java.util.Collection<Placeholder> getPlaceholders() {
-		return parser().getPlaceholders();
+	public void setDocumentSize(int documentSize) {
+		this.documentSize = documentSize;
 	}
 
-	private PlaceholderParser parser() {
+	public PlaceholderParser getPlaceholderParser() {
 		return PlaceholderFactory.getInstance().getParser(placeholderFile);
 	}
 
@@ -72,7 +66,7 @@ public class Template extends Config {
 		}
 
 		try {
-			template = BsonDocument.parse(new String(Files.readAllBytes(templatePath)));
+			referenceDocument = BsonDocument.parse(new String(Files.readAllBytes(templatePath)));
 		}
 		catch (IOException e) {
 			logger.error("Could not parse template file {}", templatePath);
@@ -83,7 +77,7 @@ public class Template extends Config {
 	}
 
 	@Override
-	public void executeInternal() {
+	protected void executeInternal() {
 	}
 
 }

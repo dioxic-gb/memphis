@@ -2,7 +2,6 @@ package com.mongodb.memphis.placeholder;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -36,7 +35,7 @@ public class PlaceholderParser {
 	private final Map<String, Placeholder> placeholderMap;
 
 	public PlaceholderParser(Map<String, Placeholder> placeholderMap) {
-		this.placeholderMap = Collections.unmodifiableMap(placeholderMap);
+		this.placeholderMap = placeholderMap;
 	}
 
 	public Collection<Placeholder> getPlaceholders() {
@@ -72,14 +71,17 @@ public class PlaceholderParser {
 				// placeholder value ${xxx}
 				if (matcher.find()) {
 					String pKey = matcher.group(1);
-					locations.add(new DocumentLocation(document, key, placeholderMap.get(pKey)));
+					Placeholder p = placeholderMap.get(pKey);
+					if (p != null) {
+						locations.add(new DocumentLocation(p, document, key));
+					}
 				}
 			}
 		}
 	}
 
 	private void parseArray(List<PlaceholderLocation> locations, BsonArray array) {
-		for (int i=0; i<array.size(); i++) {
+		for (int i = 0; i < array.size(); i++) {
 			BsonValue value = array.get(i);
 			if (value.isDocument()) {
 				parseDocument(locations, value.asDocument());
@@ -94,12 +96,13 @@ public class PlaceholderParser {
 				// placeholder value ${xxx}
 				if (matcher.find()) {
 					String pKey = matcher.group(1);
-					locations.add(new ArrayLocation(array, i, placeholderMap.get(pKey)));
+					Placeholder p = placeholderMap.get(pKey);
+					if (p != null) {
+						locations.add(new ArrayLocation(p, array, i));
+					}
 				}
 			}
 		}
 	}
-
-
 
 }

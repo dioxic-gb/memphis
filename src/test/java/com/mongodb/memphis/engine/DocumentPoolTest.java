@@ -38,7 +38,7 @@ public class DocumentPoolTest {
 				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
 		for (Template template : templates) {
-			String key = template.getTemplate().get("k").asString().getValue();
+			String key = template.getReferenceDocument().get("k").asString().getValue();
 			assertThat(counted.get(template)).as("template " + key + " count").isEqualTo(weightedTemplates.size() * template.getWeighting() / totalWeights);
 		}
 

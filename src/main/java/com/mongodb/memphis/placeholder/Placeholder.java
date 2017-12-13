@@ -4,27 +4,38 @@ import org.bson.BsonValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class Placeholder {
+import com.mongodb.memphis.engine.EngineDocument;
+
+public abstract class Placeholder implements Comparable<Placeholder> {
 
 	protected transient Logger logger = LoggerFactory.getLogger(getClass());
-	private Mode mode = Mode.DEFAULT;
+	protected int priority = -1;
 
 	public void initialise() {
 	}
 
+	public abstract Mode getMode();
+
+	public abstract BsonValue getValue(EngineDocument engineDocument);
+
 	public abstract BsonValue getValue();
 
-	public void nextBatch(int iteration) {
-	}
-
-	public Mode getMode() {
-		return mode;
+	/**
+	 * a higher number will be applied later
+	 */
+	public int getPriority() {
+		return priority;
 	}
 
 	public enum Mode {
 		BATCH,
 		DOCUMENT,
 		DEFAULT
+	}
+
+	@Override
+	public int compareTo(Placeholder o) {
+		return Integer.compare(priority, o.getPriority());
 	}
 
 }

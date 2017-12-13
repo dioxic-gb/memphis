@@ -1,9 +1,26 @@
 package com.mongodb.memphis.mutators;
 
-import org.bson.BsonDocument;
+import org.bson.BsonValue;
 
-public interface Mutator {
+import com.mongodb.memphis.placeholder.Placeholder;
 
-	void mutate(BsonDocument document);
+public abstract class Mutator extends Placeholder {
+
+	protected String input;
+
+	@Override
+	public void initialise() {
+		priority = 0;
+	}
+
+	@Override
+	public Mode getMode() {
+		return Mode.DEFAULT;
+	}
+
+	@Override
+	public BsonValue getValue() {
+		throw new UnsupportedOperationException("this method is not supported by mutator placeholders");
+	}
 
 }

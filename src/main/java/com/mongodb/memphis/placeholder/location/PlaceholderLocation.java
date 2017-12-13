@@ -13,12 +13,23 @@ import com.mongodb.memphis.placeholder.Placeholder;
  *
  * @author Mark Baker-Munton
  */
-public interface PlaceholderLocation {
+public abstract class PlaceholderLocation implements Comparable<PlaceholderLocation> {
 
-	void apply();
+	protected Placeholder placeholder;
 
-	void apply(BsonValue value);
+	public PlaceholderLocation(Placeholder placeholder) {
+		this.placeholder = placeholder;
+	}
 
-	Placeholder getPlaceholder();
+	public abstract void apply(BsonValue value);
+
+	public Placeholder getPlaceholder() {
+		return placeholder;
+	}
+
+	@Override
+	public int compareTo(PlaceholderLocation o) {
+		return placeholder.compareTo(o.getPlaceholder());
+	}
 
 }

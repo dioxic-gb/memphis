@@ -14,30 +14,19 @@ import com.mongodb.memphis.placeholder.Placeholder;
  *
  * @author Mark Baker-Munton
  */
-public class DocumentLocation implements PlaceholderLocation {
+public class DocumentLocation extends PlaceholderLocation {
 	private BsonDocument document;
 	private String key;
-	private Placeholder placeholder;
 
-	public DocumentLocation(BsonDocument document, String key, Placeholder placeholder) {
+	public DocumentLocation(Placeholder placeholder, BsonDocument document, String key) {
+		super(placeholder);
 		this.document = document;
 		this.key = key;
-		this.placeholder = placeholder;
-	}
-
-	@Override
-	public void apply() {
-		apply(placeholder.getValue());
 	}
 
 	@Override
 	public void apply(BsonValue value) {
 		document.put(key, value);
-	}
-
-	@Override
-	public Placeholder getPlaceholder() {
-		return placeholder;
 	}
 
 	@Override

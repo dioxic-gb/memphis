@@ -1,7 +1,6 @@
 package com.mongodb.memphis.engine;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,8 +11,6 @@ import java.util.stream.Collectors;
 
 import org.bson.BsonDocument;
 import org.bson.BsonValue;
-import org.bson.RawBsonDocument;
-import org.bson.codecs.BsonDocumentCodec;
 
 import com.mongodb.memphis.config.Template;
 import com.mongodb.memphis.placeholder.Placeholder;
@@ -24,9 +21,8 @@ public class DocumentPool {
 	private int batchOffset;
 	protected int batchSize;
 	protected List<Template> templates;
-	protected List<PoolDocument> pool;
+	protected List<EngineDocument> pool;
 	protected Batch batch;
-	protected BsonDocument[] templateExamples;
 	protected Map<Template, Integer> documentSizes;
 
 	public DocumentPool(List<Template> templates, int batchSize) {
@@ -88,18 +84,10 @@ public class DocumentPool {
 
 	public void initialise() {
 		List<Template> weightedList = getWeightedList();
-
 		pool = new ArrayList<>(weightedList.size());
 
-		templateExamples = new BsonDocument[templates.size()];
-
 		for (Template t : weightedList) {
-			PoolDocument poolDoc = new PoolDocument();
-			poolDoc.placeholders = t.getPlaceholders();
-			poolDoc.document = t.cloneDocument();
-			poolDoc.placeholderLocations = t.parseDocument(poolDoc.document);
-
-			pool.add(poolDoc);
+			pool.add(new EngineDocument(t));
 		}
 	}
 
@@ -113,31 +101,21 @@ public class DocumentPool {
 			batchOffset++;
 		}
 
-		// collect the placeholders from this batch of documents
-		// Set<Placeholder> batchPlaceHolders = batch.stream()
-		// .map(PoolDocument::getPlaceholders)
-		// .flatMap(Collection::stream)
-		// .collect(Collectors.toSet());
-
-		// signal to placeholders this is a new batch
-		// batchPlaceHolders.forEach(o -> o.nextBatch(iteration));
-
-		// regenerate placeholder values for this batch
 		batch.regenerateValues();
 	}
 
 	public long getBatchSize() {
-		return batch.getDocuments().stream().mapToLong(PoolDocument::getSize).sum();
+		return batch.getDocuments().stream().mapToLong(EngineDocument::getSize).sum();
 	}
 
 	public List<BsonDocument> getBatchDocuments() {
-		return Collections.unmodifiableList(batch.getDocuments().stream().map(PoolDocument::getDocument).collect(Collectors.toList()));
+		return Collections.unmodifiableList(batch.getDocuments().stream().map(EngineDocument::getDocument).collect(Collectors.toList()));
 	}
 
 	/**
 	 * Gets the first document in the batch.
 	 * <br>
-	 * Typically for something an insertOne operation where the batch size is 1
+	 * Typically for something like an insertOne operation where the batch size is always 1
 	 * @return
 	 */
 	public BsonDocument getDocument() {
@@ -145,7 +123,7 @@ public class DocumentPool {
 	}
 
 	class Batch {
-		private List<PoolDocument> docs;
+		private List<EngineDocument> docs;
 		private Map<Placeholder, BsonValue> placeholderValues;
 		private Set<Placeholder> placeholders;
 
@@ -155,102 +133,35 @@ public class DocumentPool {
 			placeholders = new HashSet<>();
 		}
 
-		void add(PoolDocument document) {
+		private void add(EngineDocument document) {
 			docs.add(document);
-			placeholders.addAll(document.placeholders);
+			placeholders.addAll(document.getPlaceholders());
 		}
 
-		List<PoolDocument> getDocuments() {
+		private List<EngineDocument> getDocuments() {
 			return docs;
 		}
 
-		void clear() {
+		private void clear() {
 			docs.clear();
 			placeholderValues.clear();
 			placeholders.clear();
 		}
 
-		void regenerateValues() {
+		private void regenerateValues() {
 			for (Placeholder p : placeholders) {
 				if (p.getMode() == Mode.BATCH) {
 					placeholderValues.put(p, p.getValue());
 				}
 			}
 
-			for (PoolDocument doc : docs) {
+			for (EngineDocument doc : docs) {
 				doc.regenerateValues(this);
 			}
 		}
 
-		BsonValue getCachedValue(Placeholder placeholder) {
-			return placeholderValues.get(placeholder);
-		}
-
-		void applyCachedValue(PlaceholderLocation locator) {
+		public void applyCachedValue(PlaceholderLocation locator) {
 			locator.apply(placeholderValues.get(locator.getPlaceholder()));
-		}
-	}
-
-	class PoolDocument {
-		private Map<Placeholder, BsonValue> placeholderValues;
-		private Integer size;
-		Template template;
-		BsonDocument document;
-		List<PlaceholderLocation> placeholderLocations;
-		Collection<Placeholder> placeholders;
-
-		Collection<Placeholder> getPlaceholders() {
-			return placeholders;
-		}
-
-		BsonDocument getDocument() {
-			return document;
-		}
-
-		Integer getSize() {
-			return size;
-		}
-
-		void applyCachedValue(PlaceholderLocation locator) {
-			locator.apply(placeholderValues.get(locator.getPlaceholder()));
-		}
-
-		void regenerateValues(Batch batch) {
-			// cache values for placeholders in DOCUMENT mode
-			for (Placeholder p : placeholders) {
-				if (p.getMode() == Mode.DOCUMENT) {
-					// lazy load map for efficiency - mostly this won't be used
-					if (placeholderValues == null) {
-						placeholderValues = new HashMap<>(placeholders.size());
-					}
-					placeholderValues.put(p, p.getValue());
-				}
-			}
-
-			// apply values to locators
-			for (PlaceholderLocation locator : placeholderLocations) {
-				switch (locator.getPlaceholder().getMode()) {
-				case BATCH:
-					batch.applyCachedValue(locator);
-					break;
-				case DOCUMENT:
-					this.applyCachedValue(locator);
-					break;
-				default:
-					locator.apply();
-				}
-			}
-
-			// calculate size if not already present
-			if (size == null) {
-				size = documentSizes.get(template);
-				if (size == null) {
-					// we'll cache this value since it will be the same for all
-					// other documents from the same template
-					size = new Integer(new RawBsonDocument(document, new BsonDocumentCodec()).getByteBuffer().limit());
-					documentSizes.put(template, size);
-				}
-			}
 		}
 	}
 

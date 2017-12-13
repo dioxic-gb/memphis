@@ -8,11 +8,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.bson.BsonValue;
 
+import com.mongodb.memphis.engine.EngineDocument;
 import com.mongodb.memphis.placeholder.Placeholder;
 
 public abstract class Generator extends Placeholder {
-
 	protected int cardinality;
+	protected Mode mode = Mode.DEFAULT;
 	private String fieldKey;
 	private String cacheKey;
 
@@ -21,10 +22,12 @@ public abstract class Generator extends Placeholder {
 
 	@Override
 	public BsonValue getValue() {
-//		if (!batchMode && cacheKey == null) {
-//			currentValue = getNextValue();
-//		}
 		return getNextValue();
+	}
+
+	@Override
+	public BsonValue getValue(EngineDocument engineDocument) {
+		return getValue();
 	}
 
 	private BsonValue getNextValue() {
@@ -37,17 +40,24 @@ public abstract class Generator extends Placeholder {
 		}
 	}
 
-//	public void nextBatch(int iteration) {
-//		if (cacheKey != null) {
-//			currentValue = DataCache.getValue(cacheKey, fieldKey, Thread.currentThread(), iteration);
-//			if (currentValue == null) {
-//				throw new IllegalStateException("Could not find fieldKey:" + fieldKey + " in data cache " + cacheKey);
-//			}
-//		}
-//		else if (batchMode) {
-//			currentValue = getNextValue();
-//		}
-//	}
+	// public void nextBatch(int iteration) {
+	// if (cacheKey != null) {
+	// currentValue = DataCache.getValue(cacheKey, fieldKey,
+	// Thread.currentThread(), iteration);
+	// if (currentValue == null) {
+	// throw new IllegalStateException("Could not find fieldKey:" + fieldKey + "
+	// in data cache " + cacheKey);
+	// }
+	// }
+	// else if (batchMode) {
+	// currentValue = getNextValue();
+	// }
+	// }
+
+	@Override
+	public Mode getMode() {
+		return mode;
+	}
 
 	@Override
 	public void initialise() {

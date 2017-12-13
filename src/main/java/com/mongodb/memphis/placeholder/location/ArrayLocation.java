@@ -5,20 +5,14 @@ import org.bson.BsonValue;
 
 import com.mongodb.memphis.placeholder.Placeholder;
 
-public class ArrayLocation implements PlaceholderLocation {
+public class ArrayLocation extends PlaceholderLocation {
 	private BsonArray array;
 	private int index;
-	private Placeholder placeholder;
 
-	public ArrayLocation(BsonArray array, int index, Placeholder placeholder) {
+	public ArrayLocation(Placeholder placeholder, BsonArray array, int index) {
+		super(placeholder);
 		this.array = array;
 		this.index = index;
-		this.placeholder = placeholder;
-	}
-
-	@Override
-	public void apply() {
-		apply(placeholder.getValue());
 	}
 
 	@Override
@@ -27,8 +21,8 @@ public class ArrayLocation implements PlaceholderLocation {
 	}
 
 	@Override
-	public Placeholder getPlaceholder() {
-		return placeholder;
+	public String toString() {
+		return "ArrayLocation [index=" + index + ", placeholder=" + placeholder + "]";
 	}
 
 }

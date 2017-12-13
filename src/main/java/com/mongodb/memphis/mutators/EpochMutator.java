@@ -1,11 +1,13 @@
 package com.mongodb.memphis.mutators;
 
-import org.bson.BsonDocument;
+import org.bson.BsonValue;
 
-public class EpochMutator implements Mutator {
+import com.mongodb.memphis.engine.EngineDocument;
+
+public class EpochMutator extends Mutator {
 
 	@Override
-	public void mutate(BsonDocument document) {
+	public BsonValue getValue(EngineDocument engineDocument) {
 //		for (String epochIndex : config.getEpochIndex()) {
 //			BsonValue queryValue = document.get(epochIndex);
 //			if (queryValue != null && queryValue.isString()) {
@@ -19,6 +21,7 @@ public class EpochMutator implements Mutator {
 //				document.put(epochIndex + config.getEpochSuffix(), new BsonInt32((int) epoch));
 //			}
 //		}
+		return null;
 	}
 
 }
