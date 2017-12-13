@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.bson.BsonInt32;
 import org.bson.BsonInt64;
 import org.bson.BsonNull;
@@ -13,6 +12,7 @@ import org.bson.BsonValue;
 
 import com.mongodb.memphis.annotations.Name;
 import com.mongodb.memphis.engine.EngineDocument;
+import com.mongodb.memphis.util.HashUtil;
 
 @Name("hash")
 public class HashMutator extends Mutator {
@@ -21,15 +21,12 @@ public class HashMutator extends Mutator {
 
 	@Override
 	public BsonValue getValue(EngineDocument engineDocument) {
-		Optional<String> opt = Optional.ofNullable(engineDocument)
+		Optional<BsonValue> opt = Optional.ofNullable(engineDocument)
 				.map(EngineDocument::getDocument)
-				.map(o -> o.get(input))
-				.filter(BsonValue::isString)
-				.map(BsonValue::asString)
-				.map(BsonString::getValue);
+				.map(o -> o.get(input));
 
 		if (opt.isPresent()) {
-			byte[] md5 = DigestUtils.md5(opt.get());
+			byte[] md5 = HashUtil.md5(opt.get());
 
 			switch (mode) {
 			case HEX:
