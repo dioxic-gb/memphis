@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.bson.BsonDateTime;
 import org.bson.BsonInt32;
+import org.bson.BsonInt64;
 import org.bson.BsonNull;
 import org.bson.BsonValue;
 
@@ -31,7 +32,7 @@ public class EpochMutator extends Mutator {
 		if (opt.isPresent()) {
 			if (chronoField != null) {
 				LocalDateTime dt = LocalDateTime.ofInstant(Instant.ofEpochMilli(opt.get()), ZoneOffset.UTC);
-				return new BsonInt32(dt.get(chronoField));
+				return chronoField.range().getMaximum() > Integer.MAX_VALUE ? new BsonInt64(dt.getLong(chronoField)) : new BsonInt32(dt.get(chronoField));
 			}
 			else {
 				// return the MSB

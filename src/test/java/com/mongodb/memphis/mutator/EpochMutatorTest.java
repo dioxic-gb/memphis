@@ -6,12 +6,18 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoField;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 import org.bson.BsonDateTime;
 import org.bson.BsonDocument;
 import org.bson.BsonInt32;
+import org.bson.BsonInt64;
+import org.bson.BsonValue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 
 import com.mongodb.memphis.MockitoExtension;
@@ -23,8 +29,9 @@ public class EpochMutatorTest {
 	@Mock
 	EngineDocument engDoc;
 
-	@Test
-	public void chronoFieldTest() {
+	@ParameterizedTest
+	@MethodSource("supportedChronoFields")
+	public void chronoFieldTest(ChronoField chrono) {
 		EpochMutator mutator = new EpochMutator();
 		mutator.input = "k";
 
@@ -33,13 +40,10 @@ public class EpochMutatorTest {
 
 		when(engDoc.getDocument()).thenReturn(new BsonDocument(mutator.input, new BsonDateTime(epoch)));
 
-		assertChronoField(ChronoField.DAY_OF_MONTH, mutator, dt);
-		assertChronoField(ChronoField.YEAR, mutator, dt);
-		assertChronoField(ChronoField.DAY_OF_YEAR, mutator, dt);
-		assertChronoField(ChronoField.MONTH_OF_YEAR, mutator, dt);
-		assertChronoField(ChronoField.SECOND_OF_DAY, mutator, dt);
-		assertChronoField(ChronoField.HOUR_OF_DAY, mutator, dt);
-		assertChronoField(ChronoField.MILLI_OF_SECOND, mutator, dt);
+		mutator.chronoField = chrono;
+		BsonValue expected = chrono.range().getMaximum() > Integer.MAX_VALUE ? new BsonInt64(dt.getLong(chrono)) : new BsonInt32(dt.get(chrono));
+
+		assertThat(mutator.getValue(engDoc)).as(chrono.toString()).isEqualTo(expected);
 	}
 
 	@Test
@@ -53,8 +57,9 @@ public class EpochMutatorTest {
 		assertThat(mutator.getValue(engDoc)).as("msb").isEqualTo(new BsonInt32(Integer.MAX_VALUE));
 	}
 
-	private void assertChronoField(ChronoField chrono, EpochMutator mutator, LocalDateTime dt) {
-		mutator.chronoField = chrono;
-		assertThat(mutator.getValue(engDoc)).as(chrono.toString()).isEqualTo(new BsonInt32(dt.get(mutator.chronoField)));
+	static Stream<ChronoField> supportedChronoFields() {
+		return Arrays.stream(ChronoField.values())
+				.filter(f -> f.isDateBased() || f.isTimeBased());
 	}
+
 }
