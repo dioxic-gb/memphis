@@ -10,14 +10,14 @@ import java.time.temporal.ChronoField;
 import org.bson.BsonDateTime;
 import org.bson.BsonDocument;
 import org.bson.BsonInt32;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
+import com.mongodb.memphis.MockitoExtension;
 import com.mongodb.memphis.engine.EngineDocument;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class EpochMutatorTest {
 
 	@Mock

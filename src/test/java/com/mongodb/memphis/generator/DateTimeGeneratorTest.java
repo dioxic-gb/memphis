@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 import org.bson.BsonValue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DateTimeGeneratorTest extends AbstractGeneratorTest {
 

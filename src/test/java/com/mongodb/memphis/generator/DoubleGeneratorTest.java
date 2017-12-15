@@ -3,7 +3,7 @@ package com.mongodb.memphis.generator;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.bson.BsonValue;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DoubleGeneratorTest extends AbstractGeneratorTest {
 

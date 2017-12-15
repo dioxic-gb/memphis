@@ -1,15 +1,14 @@
 package com.mongodb.memphis;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,24 +19,17 @@ public class RunnerTest {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Test
-	@Ignore
-	public void loadConfig() {
-		try {
-			String configJson = new String(Files.readAllBytes(Paths.get("example-config.json")), StandardCharsets.UTF_8);
+	@Disabled
+	public void loadConfig() throws IOException {
+		String configJson = new String(Files.readAllBytes(Paths.get("example-config.json")), StandardCharsets.UTF_8);
 
-			Root root = Root.loadFromJson(configJson);
+		Root root = Root.loadFromJson(configJson);
 
-			root.initialise();
-			root.execute();
+		root.initialise();
+		root.execute();
 
-			//logger.info(root.toString());
-			assertNotNull(root);
-			// assertEquals(3, config.getIterations());
-
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			fail();
-		}
+		// logger.info(root.toString());
+		assertThat(root).isNotNull();
+		// assertEquals(3, config.getIterations());
 	}
 }

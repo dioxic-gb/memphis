@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 import org.bson.BsonDocument;
 import org.bson.BsonString;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.mongodb.memphis.config.Template;
 
