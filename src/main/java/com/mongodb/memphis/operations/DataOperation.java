@@ -6,6 +6,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.lang3.Validate;
 import org.bson.BsonDocument;
 
 import com.mongodb.client.MongoCollection;
@@ -19,10 +20,6 @@ public abstract class DataOperation extends Operation {
 	protected List<Template> templates;
 
 	private transient Results operationResults;
-
-	public final List<Template> getTemplates() {
-		return templates;
-	}
 
 	@Override
 	public List<Template> getChildren() {
@@ -39,7 +36,14 @@ public abstract class DataOperation extends Operation {
 
 	@Override
 	protected void initialise() {
+		super.initialise();
 		operationResults = new Results(getThreads(), getIterations());
+	}
+
+	@Override
+	protected void validate() {
+		super.validate();
+		Validate.notNull(templates, "templates not set for %s", this.getClass().getSimpleName());
 	}
 
 	protected abstract int getIterations();
