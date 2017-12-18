@@ -1,4 +1,4 @@
-package com.google.gson.typeadapters;
+package com.mongodb.memphis.util.gson.typeadapters;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;

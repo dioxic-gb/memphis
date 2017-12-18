@@ -11,7 +11,6 @@ import org.reflections.Reflections;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientURI;
@@ -26,6 +25,7 @@ import com.mongodb.memphis.config.adapters.ReadPreferenceTypeAdapter;
 import com.mongodb.memphis.config.adapters.WriteConcernTypeAdapter;
 import com.mongodb.memphis.operations.Operation;
 import com.mongodb.memphis.operations.SampleData;
+import com.mongodb.memphis.util.gson.typeadapters.RuntimeTypeAdapterFactory;
 
 public class Root extends Config {
 

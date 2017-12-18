@@ -1,24 +1,23 @@
 package com.mongodb.memphis.generator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import org.bson.BsonValue;
 
 import com.mongodb.memphis.engine.EngineDocument;
 import com.mongodb.memphis.placeholder.Placeholder;
 
-public abstract class Generator extends Placeholder {
+public abstract class Generator<T> extends Placeholder {
 	protected int cardinality;
 	protected Scope scope = Scope.DEFAULT;
-	private String fieldKey;
-	private String cacheKey;
 
 	private transient List<BsonValue> valueCache;
-	private transient BsonValue currentValue;
 
 	@Override
 	public BsonValue getValue() {
@@ -36,23 +35,9 @@ public abstract class Generator extends Placeholder {
 			return valueCache.get(random().nextInt(valueCache.size()));
 		}
 		else {
-			return generateValue();
+			return toBson(generateValue());
 		}
 	}
-
-	// public void nextBatch(int iteration) {
-	// if (cacheKey != null) {
-	// currentValue = DataCache.getValue(cacheKey, fieldKey,
-	// Thread.currentThread(), iteration);
-	// if (currentValue == null) {
-	// throw new IllegalStateException("Could not find fieldKey:" + fieldKey + "
-	// in data cache " + cacheKey);
-	// }
-	// }
-	// else if (batchMode) {
-	// currentValue = getNextValue();
-	// }
-	// }
 
 	@Override
 	public Scope getScope() {
@@ -62,25 +47,38 @@ public abstract class Generator extends Placeholder {
 	@Override
 	public void initialise() {
 		super.initialise();
-		List<BsonValue> list = getListValues();
-		if (list != null) {
-			valueCache = Collections.unmodifiableList(list);
+		if (getListValues() != null) {
+			valueCache = Collections.unmodifiableList(Arrays.stream(getListValues()).map(this::toBson).collect(Collectors.toList()));
 		}
 		else if (cardinality > 0) {
 			valueCache = new ArrayList<>(cardinality);
 			for (int i = 0; i < cardinality; i++) {
-				valueCache.add(generateValue());
+				valueCache.add(toBson(generateValue()));
 			}
 		}
 	}
 
-	protected Random random() {
+	private Random random() {
 		return ThreadLocalRandom.current();
 	}
 
-	protected abstract BsonValue generateValue();
+	protected int nextInt(int min, int max) {
+		return random().nextInt(max - min) + min;
+	}
 
-	protected List<BsonValue> getListValues() {
+	protected long nextLong(long min, long max) {
+		return Double.valueOf(random().nextDouble() * (max - min)).longValue() + min;
+	}
+
+	protected double nextDouble(double min, double max) {
+		return random().nextDouble() * (max - min) + min;
+	}
+
+	protected abstract T generateValue();
+
+	protected abstract BsonValue toBson(T value);
+
+	protected T[] getListValues() {
 		return null;
 	}
 

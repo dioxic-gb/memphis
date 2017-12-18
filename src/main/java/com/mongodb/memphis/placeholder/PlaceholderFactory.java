@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.mongodb.memphis.annotations.Name;
 import com.mongodb.memphis.config.adapters.LocalDateTimeTypeAdapter;
+import com.mongodb.memphis.util.gson.typeadapters.RuntimeTypeAdapterFactory;
 
 public class PlaceholderFactory {
 	private final static Logger logger = LoggerFactory.getLogger(PlaceholderFactory.class);

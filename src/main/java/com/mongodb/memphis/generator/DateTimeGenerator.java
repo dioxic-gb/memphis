@@ -10,7 +10,7 @@ import org.bson.BsonValue;
 import com.mongodb.memphis.annotations.Name;
 
 @Name("datetime")
-public class DateTimeGenerator extends Generator {
+public class DateTimeGenerator extends Generator<Long> {
 
 	private static long NOW = Instant.now().toEpochMilli();
 
@@ -32,9 +32,13 @@ public class DateTimeGenerator extends Generator {
 	}
 
 	@Override
-	protected BsonValue generateValue() {
-		Double d = new Double(random().nextDouble() * (maxLong - minLong));
-		return new BsonDateTime(d.longValue() + minLong);
+	protected Long generateValue() {
+		return nextLong(minLong, maxLong);
+	}
+
+	@Override
+	protected BsonValue toBson(Long value) {
+		return new BsonDateTime(value);
 	}
 
 }

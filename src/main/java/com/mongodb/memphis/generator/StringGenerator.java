@@ -1,32 +1,33 @@
 package com.mongodb.memphis.generator;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.bson.BsonString;
 import org.bson.BsonValue;
 
 import com.mongodb.memphis.annotations.Name;
 
 @Name("string")
-public class StringGenerator extends Generator {
+public class StringGenerator extends Generator<String> {
 
 	String saltChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	int length = 10;
 	String[] list;
 
 	@Override
-	protected List<BsonValue> getListValues() {
-		return list != null ? Arrays.stream(list).map(BsonString::new).collect(Collectors.toList()) : null;
+	protected String[] getListValues() {
+		return list;
 	}
 
 	@Override
-	protected BsonValue generateValue() {
-		StringBuilder sb = new StringBuilder();
+	protected String generateValue() {
+		StringBuilder sb = new StringBuilder(length);
 		for (int i = 0; i < length; i++) {
-			sb.append(saltChars.charAt(random().nextInt(saltChars.length())));
+			sb.append(saltChars.charAt(nextInt(0, saltChars.length())));
 		}
-		return new BsonString(sb.toString());
+		return sb.toString();
+	}
+
+	@Override
+	protected BsonValue toBson(String value) {
+		return new BsonString(value);
 	}
 }

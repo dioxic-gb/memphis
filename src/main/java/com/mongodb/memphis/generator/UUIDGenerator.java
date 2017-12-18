@@ -8,10 +8,15 @@ import org.bson.BsonValue;
 import com.mongodb.memphis.annotations.Name;
 
 @Name("uuid")
-public class UUIDGenerator extends Generator {
+public class UUIDGenerator extends Generator<String> {
 
 	@Override
-	protected BsonValue generateValue() {
-		return new BsonString(UUID.randomUUID().toString());
+	protected String generateValue() {
+		return UUID.randomUUID().toString();
+	}
+
+	@Override
+	protected BsonValue toBson(String value) {
+		return new BsonString(value);
 	}
 }

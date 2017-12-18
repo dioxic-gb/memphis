@@ -6,26 +6,31 @@ import org.bson.BsonValue;
 import com.mongodb.memphis.annotations.Name;
 
 @Name("stringdatetime")
-public class StringDateTimeGenerator extends Generator {
+public class StringDateTimeGenerator extends Generator<String> {
 
     @Override
-    protected BsonValue generateValue() {
+    protected String generateValue() {
         StringBuilder sb = new StringBuilder(10);
 
-        sb.append(random().nextInt(33)+2017);
+        sb.append(nextInt(0,33)+2017);
         sb.append('-');
-        int month = random().nextInt(12)+1;
+        int month = nextInt(1,13);
         if (month < 10) {
             sb.append(0);
         }
         sb.append(month);
         sb.append('-');
-        int day = random().nextInt(28)+1;
+        int day = nextInt(1,29);
         if (day < 10) {
             sb.append(0);
         }
         sb.append(day);
-        return new BsonString(sb.toString());
+        return sb.toString();
     }
+
+	@Override
+	protected BsonValue toBson(String value) {
+		return new BsonString(value);
+	}
 
 }

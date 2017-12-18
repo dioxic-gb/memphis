@@ -6,10 +6,15 @@ import org.bson.BsonValue;
 import com.mongodb.memphis.annotations.Name;
 
 @Name("objectId")
-public class ObjectIdGenerator extends Generator {
+public class ObjectIdGenerator extends Generator<BsonObjectId> {
 
 	@Override
-	protected BsonValue generateValue() {
+	protected BsonObjectId generateValue() {
 		return new BsonObjectId();
+	}
+
+	@Override
+	protected BsonValue toBson(BsonObjectId value) {
+		return value;
 	}
 }
