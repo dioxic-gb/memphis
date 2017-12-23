@@ -34,20 +34,20 @@ public class Root extends Config {
 	static {
 		Reflections reflections = new Reflections("com.mongodb.memphis");
 
-		RuntimeTypeAdapterFactory<Operation> typeAdapterFactory = RuntimeTypeAdapterFactory
+		RuntimeTypeAdapterFactory<Operation> operationAdapterFactory = RuntimeTypeAdapterFactory
 				.of(Operation.class, "type");
 
 		for (Class<? extends Operation> clazz : reflections.getSubTypesOf(Operation.class)) {
 			Name annotation = clazz.getAnnotation(Name.class);
 			if (annotation != null) {
-				typeAdapterFactory.registerSubtype(clazz, annotation.value());
+				operationAdapterFactory.registerSubtype(clazz, annotation.value());
 			}
 		}
 
 		gson = new GsonBuilder()
 				.setPrettyPrinting()
 				//.excludeFieldsWithoutExposeAnnotation()
-				.registerTypeAdapterFactory(typeAdapterFactory)
+				.registerTypeAdapterFactory(operationAdapterFactory)
 				.registerTypeAdapterFactory(new IndexModelAdapterFactory())
 				.registerTypeAdapter(WriteConcern.class, new WriteConcernTypeAdapter())
 				.registerTypeAdapter(ReadConcern.class, new ReadConcernTypeAdapter())

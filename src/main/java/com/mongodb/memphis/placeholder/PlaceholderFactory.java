@@ -17,6 +17,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.memphis.annotations.Name;
 import com.mongodb.memphis.config.adapters.LocalDateTimeTypeAdapter;
+import com.mongodb.memphis.distribution.IntegerDistributionWrapper;
 import com.mongodb.memphis.util.gson.typeadapters.RuntimeTypeAdapterFactory;
 
 public class PlaceholderFactory {
@@ -30,19 +31,30 @@ public class PlaceholderFactory {
 	static {
 		Reflections reflections = new Reflections("com.mongodb.memphis");
 
-		RuntimeTypeAdapterFactory<Placeholder> typeAdapterFactory = RuntimeTypeAdapterFactory
+		RuntimeTypeAdapterFactory<Placeholder> placeholderAdapterFactory = RuntimeTypeAdapterFactory
 				.of(Placeholder.class, "type");
 
 		for (Class<? extends Placeholder> clazz : reflections.getSubTypesOf(Placeholder.class)) {
 			Name annotation = clazz.getAnnotation(Name.class);
 			if (annotation != null) {
-				typeAdapterFactory.registerSubtype(clazz, annotation.value());
+				placeholderAdapterFactory.registerSubtype(clazz, annotation.value());
+			}
+		}
+
+		RuntimeTypeAdapterFactory<IntegerDistributionWrapper> distributionAdapterFactory = RuntimeTypeAdapterFactory
+				.of(IntegerDistributionWrapper.class, "type");
+
+		for (Class<? extends IntegerDistributionWrapper> clazz : reflections.getSubTypesOf(IntegerDistributionWrapper.class)) {
+			Name annotation = clazz.getAnnotation(Name.class);
+			if (annotation != null) {
+				distributionAdapterFactory.registerSubtype(clazz, annotation.value());
 			}
 		}
 
 		gson = new GsonBuilder()
 				.setPrettyPrinting()
-				.registerTypeAdapterFactory(typeAdapterFactory)
+				.registerTypeAdapterFactory(placeholderAdapterFactory)
+				.registerTypeAdapterFactory(distributionAdapterFactory)
 				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
 				.create();
 	}

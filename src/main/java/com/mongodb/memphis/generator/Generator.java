@@ -8,15 +8,21 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import org.apache.commons.math4.distribution.IntegerDistribution;
+import org.apache.commons.math4.distribution.UniformIntegerDistribution;
+import org.apache.commons.rng.simple.RandomSource;
 import org.bson.BsonValue;
 
+import com.mongodb.memphis.distribution.IntegerDistributionWrapper;
 import com.mongodb.memphis.engine.EngineDocument;
 import com.mongodb.memphis.placeholder.Placeholder;
 
 public abstract class Generator<T> extends Placeholder {
 	protected int cardinality;
 	protected Scope scope = Scope.DEFAULT;
+	protected IntegerDistributionWrapper distribution;
 
+	protected transient IntegerDistribution.Sampler sampler;
 	private transient List<BsonValue> valueCache;
 
 	@Override
@@ -32,7 +38,7 @@ public abstract class Generator<T> extends Placeholder {
 	private BsonValue getNextValue() {
 		// if we have a list of values or a fixed number of unique values set
 		if (valueCache != null) {
-			return valueCache.get(random().nextInt(valueCache.size()));
+			return valueCache.get(sampler.sample());
 		}
 		else {
 			return toBson(generateValue());
@@ -47,6 +53,7 @@ public abstract class Generator<T> extends Placeholder {
 	@Override
 	public void initialise() {
 		super.initialise();
+
 		if (getListValues() != null) {
 			valueCache = Collections.unmodifiableList(Arrays.stream(getListValues()).map(this::toBson).collect(Collectors.toList()));
 		}
@@ -54,6 +61,18 @@ public abstract class Generator<T> extends Placeholder {
 			valueCache = new ArrayList<>(cardinality);
 			for (int i = 0; i < cardinality; i++) {
 				valueCache.add(toBson(generateValue()));
+			}
+		}
+
+		if (valueCache != null) {
+			if (distribution != null) {
+				distribution.setLowerBound(0);
+				distribution.setUpperBound(valueCache.size());
+				distribution.initialise();
+				sampler = distribution.createSampler(RandomSource.create(RandomSource.WELL_44497_B));
+			}
+			else {
+				sampler = new UniformIntegerDistribution(0, valueCache.size()).createSampler(RandomSource.create(RandomSource.WELL_44497_B));
 			}
 		}
 	}
