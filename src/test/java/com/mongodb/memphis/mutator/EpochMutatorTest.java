@@ -33,28 +33,28 @@ public class EpochMutatorTest {
 	@MethodSource("supportedChronoFields")
 	public void chronoFieldTest(ChronoField chrono) {
 		EpochMutator mutator = new EpochMutator();
-		mutator.input = "k";
+		String input = "k";
 
 		LocalDateTime dt = LocalDateTime.of(2017, 12, 15, 1, 30, 12);
 		long epoch = dt.toInstant(ZoneOffset.UTC).toEpochMilli();
 
-		when(engDoc.getDocument()).thenReturn(new BsonDocument(mutator.input, new BsonDateTime(epoch)));
+		when(engDoc.getDocument()).thenReturn(new BsonDocument(input, new BsonDateTime(epoch)));
 
 		mutator.chronoField = chrono;
 		BsonValue expected = chrono.range().getMaximum() > Integer.MAX_VALUE ? new BsonInt64(dt.getLong(chrono)) : new BsonInt32(dt.get(chrono));
 
-		assertThat(mutator.getValue(engDoc)).as(chrono.toString()).isEqualTo(expected);
+		assertThat(mutator.getValue(engDoc, new String[] {null, input})).as(chrono.toString()).isEqualTo(expected);
 	}
 
 	@Test
 	public void lsbTest() {
 		EpochMutator mutator = new EpochMutator();
-		mutator.input = "k";
+		String input = "k";
 
 		long epoch = Long.MAX_VALUE;
-		when(engDoc.getDocument()).thenReturn(new BsonDocument(mutator.input, new BsonDateTime(epoch)));
+		when(engDoc.getDocument()).thenReturn(new BsonDocument(input, new BsonDateTime(epoch)));
 
-		assertThat(mutator.getValue(engDoc)).as("msb").isEqualTo(new BsonInt32(Integer.MAX_VALUE));
+		assertThat(mutator.getValue(engDoc, new String[] {null, input})).as("msb").isEqualTo(new BsonInt32(Integer.MAX_VALUE));
 	}
 
 	static Stream<ChronoField> supportedChronoFields() {

@@ -71,9 +71,11 @@ public class PlaceholderParser {
 				// placeholder value ${xxx}
 				if (matcher.find()) {
 					String pKey = matcher.group(1);
-					Placeholder p = placeholderMap.get(pKey);
+					String[] attrs = pKey.split(":");
+
+					Placeholder p = placeholderMap.get(attrs[0]);
 					if (p != null) {
-						locations.add(new DocumentLocation(p, document, key));
+						locations.add(new DocumentLocation(p, document, key, attrs));
 					}
 				}
 			}
@@ -96,9 +98,10 @@ public class PlaceholderParser {
 				// placeholder value ${xxx}
 				if (matcher.find()) {
 					String pKey = matcher.group(1);
-					Placeholder p = placeholderMap.get(pKey);
+					String[] attrs = pKey.split(":");
+					Placeholder p = placeholderMap.get(attrs[0]);
 					if (p != null) {
-						locations.add(new ArrayLocation(p, array, i));
+						locations.add(new ArrayLocation(p, array, i, attrs));
 					}
 				}
 			}

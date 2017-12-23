@@ -18,7 +18,7 @@ public abstract class Placeholder implements Comparable<Placeholder> {
 		return Scope.DEFAULT;
 	};
 
-	public abstract BsonValue getValue(EngineDocument engineDocument);
+	public abstract BsonValue getValue(EngineDocument engineDocument, String[] attributes);
 
 	public abstract BsonValue getValue();
 

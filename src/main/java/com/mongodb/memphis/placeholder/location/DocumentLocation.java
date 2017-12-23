@@ -18,11 +18,13 @@ public class DocumentLocation extends PlaceholderLocation {
 	private BsonDocument document;
 	private String key;
 
-	public DocumentLocation(Placeholder placeholder, BsonDocument document, String key) {
-		super(placeholder);
+	public DocumentLocation(Placeholder placeholder, BsonDocument document, String key, String... attributes) {
+		super(placeholder, attributes);
 		this.document = document;
 		this.key = key;
 	}
+
+	private DocumentLocation() {}
 
 	@Override
 	public void apply(BsonValue value) {
@@ -32,6 +34,35 @@ public class DocumentLocation extends PlaceholderLocation {
 	@Override
 	public String toString() {
 		return "PlaceHolderLocation [key=" + key + ", value=" + placeholder.toString() + "]";
+	}
+
+	public static class DocumentLocationBuilder extends Builder<DocumentLocation> {
+		private BsonDocument document;
+		private String key;
+
+		@Override
+		public DocumentLocation build() {
+			DocumentLocation location = super.build();
+			location.document = document;
+			location.key = key;
+			return location;
+		}
+
+		public DocumentLocationBuilder key(String key) {
+			this.key = key;
+			return this;
+		}
+
+		public DocumentLocationBuilder document(BsonDocument document) {
+			this.document = document;
+			return this;
+		}
+
+		@Override
+		protected DocumentLocation create() {
+			return new DocumentLocation();
+		}
+
 	}
 
 }

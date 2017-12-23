@@ -21,7 +21,9 @@ public class EpochMutator extends Mutator {
 	ChronoField chronoField;
 
 	@Override
-	public BsonValue getValue(EngineDocument engineDocument) {
+	public BsonValue getValue(EngineDocument engineDocument, String[] attributes) {
+		String input = attributes.length > 1 ? attributes[1] : null;
+
 		Optional<Long> opt = Optional.ofNullable(engineDocument)
 			.map(EngineDocument::getDocument)
 			.map(o -> o.get(input))

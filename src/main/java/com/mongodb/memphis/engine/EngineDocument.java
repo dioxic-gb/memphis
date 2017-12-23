@@ -58,7 +58,7 @@ public class EngineDocument {
 				if (placeholderValues == null) {
 					placeholderValues = new HashMap<>(placeholders.size());
 				}
-				placeholderValues.put(p, p.getValue(this));
+				placeholderValues.put(p, p.getValue(this, null));
 			}
 		}
 
@@ -73,7 +73,7 @@ public class EngineDocument {
 				this.applyCachedValue(locator);
 				break;
 			default:
-				locator.apply(p.getValue(this));
+				locator.apply(p.getValue(this, locator.getAttributes()));
 			}
 		}
 

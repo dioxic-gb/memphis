@@ -25,7 +25,7 @@ public abstract class Generator<T> extends Placeholder {
 	}
 
 	@Override
-	public BsonValue getValue(EngineDocument engineDocument) {
+	public BsonValue getValue(EngineDocument engineDocument, String[] attributes) {
 		return getValue();
 	}
 

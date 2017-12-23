@@ -6,8 +6,6 @@ import com.mongodb.memphis.placeholder.Placeholder;
 
 public abstract class Mutator extends Placeholder {
 
-	protected String input;
-
 	@Override
 	public void initialise() {
 		priority = 0;

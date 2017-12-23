@@ -20,7 +20,9 @@ public class HashMutator extends Mutator {
 	Mode mode = Mode.INT32;
 
 	@Override
-	public BsonValue getValue(EngineDocument engineDocument) {
+	public BsonValue getValue(EngineDocument engineDocument, String[] attributes) {
+		String input = attributes.length > 1 ? attributes[1] : null;
+
 		Optional<BsonValue> opt = Optional.ofNullable(engineDocument)
 				.map(EngineDocument::getDocument)
 				.map(o -> o.get(input));
