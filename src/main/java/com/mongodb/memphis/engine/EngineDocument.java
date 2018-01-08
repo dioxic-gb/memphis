@@ -1,7 +1,6 @@
 package com.mongodb.memphis.engine;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,19 +22,22 @@ public class EngineDocument {
 	private Template template;
 	private BsonDocument document;
 	private List<PlaceholderLocation> placeholderLocations;
-	private Collection<Placeholder> placeholders;
+	private Map<String, Placeholder> placeholderMap;
 
 	public EngineDocument(Template template) {
 		PlaceholderParser parser = template.getPlaceholderParser();
 		this.document = template.getReferenceDocument().clone();
 		this.template = template;
 		this.placeholderLocations = parser.parseDocument(document);
-		Collections.sort(placeholderLocations);
-		this.placeholders = parser.getPlaceholders();
+		this.placeholderMap = parser.getPlaceholderMap();
 	}
 
 	public BsonDocument getDocument() {
 		return document;
+	}
+
+	public BsonValue getFieldValue(String fieldKey) {
+		return document.get(fieldKey);
 	}
 
 	public Integer getSize() {
@@ -43,38 +45,32 @@ public class EngineDocument {
 	}
 
 	public Collection<Placeholder> getPlaceholders() {
-		return placeholders;
+		return placeholderMap.values();
 	}
 
-	private void applyCachedValue(PlaceholderLocation locator) {
-		locator.apply(placeholderValues.get(locator.getPlaceholder()));
+	public Placeholder getPlaceholder(String key) {
+		return placeholderMap.get(key);
+	}
+
+	public BsonValue getCachedValue(Placeholder placeholder) {
+		return placeholderValues.get(placeholder);
 	}
 
 	public void regenerateValues(Batch batch) {
 		// cache values for placeholders in DOCUMENT mode
-		for (Placeholder p : placeholders) {
+		for (Placeholder p : placeholderMap.values()) {
 			if (p.getScope() == Scope.DOCUMENT) {
 				// lazy load map for efficiency - mostly this won't be used
 				if (placeholderValues == null) {
-					placeholderValues = new HashMap<>(placeholders.size());
+					placeholderValues = new HashMap<>(placeholderMap.size());
 				}
-				placeholderValues.put(p, p.getValue(this, null));
+				placeholderValues.put(p, p.getValue());
 			}
 		}
 
 		// apply values to locators
 		for (PlaceholderLocation locator : placeholderLocations) {
-			Placeholder p = locator.getPlaceholder();
-			switch (p.getScope()) {
-			case BATCH:
-				batch.applyCachedValue(locator);
-				break;
-			case DOCUMENT:
-				this.applyCachedValue(locator);
-				break;
-			default:
-				locator.apply(p.getValue(this, locator.getAttributes()));
-			}
+			locator.apply(locator.getPlaceholder().getScopedValue(this, batch, locator.getAttributes()));
 		}
 
 		// calculate size if not already present

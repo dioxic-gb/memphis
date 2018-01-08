@@ -1,7 +1,7 @@
 package com.mongodb.memphis.placeholder;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -38,12 +38,12 @@ public class PlaceholderParser {
 		this.placeholderMap = placeholderMap;
 	}
 
-	public Collection<Placeholder> getPlaceholders() {
-		return placeholderMap.values();
+	public Map<String, Placeholder> getPlaceholderMap() {
+		return placeholderMap;
 	}
 
 	/**
-	 * Parse a BsonDcoument and return me a list of locators
+	 * Parse a BsonDcoument and return me a list of locators in priority order
 	 *
 	 * @param document
 	 * @return placeholder locators
@@ -51,6 +51,7 @@ public class PlaceholderParser {
 	public List<PlaceholderLocation> parseDocument(BsonDocument document) {
 		List<PlaceholderLocation> locations = new ArrayList<>();
 		parseDocument(locations, document);
+		Collections.sort(locations);
 		return locations;
 	}
 

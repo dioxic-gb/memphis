@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.reflections.Reflections;
 import org.slf4j.Logger;
@@ -83,8 +84,9 @@ public class PlaceholderFactory {
 				}.getType());
 
 				// initialise placeholders
-				for (Placeholder placeholder : placeholderMap.values()) {
-					placeholder.initialise();
+				for (Entry<String, Placeholder> entry  : placeholderMap.entrySet()) {
+					entry.getValue().initialise();
+					entry.getValue().setKey(entry.getKey());
 				}
 
 				parserMap.put(placeholderFile, new PlaceholderParser(placeholderMap));

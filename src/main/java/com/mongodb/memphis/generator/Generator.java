@@ -14,6 +14,7 @@ import org.apache.commons.rng.simple.RandomSource;
 import org.bson.BsonValue;
 
 import com.mongodb.memphis.distribution.IntegerDistributionWrapper;
+import com.mongodb.memphis.engine.DocumentPool.Batch;
 import com.mongodb.memphis.engine.EngineDocument;
 import com.mongodb.memphis.placeholder.Placeholder;
 
@@ -31,8 +32,15 @@ public abstract class Generator<T> extends Placeholder {
 	}
 
 	@Override
-	public BsonValue getValue(EngineDocument engineDocument, String[] attributes) {
-		return getValue();
+	public BsonValue getScopedValue(EngineDocument engineDocument, Batch batch, String[] attributes) {
+		switch (scope) {
+		case BATCH:
+			return batch.getCachedValue(this);
+		case DOCUMENT:
+			return engineDocument.getCachedValue(this);
+		default:
+			return getNextValue();
+		}
 	}
 
 	private BsonValue getNextValue() {
@@ -52,8 +60,6 @@ public abstract class Generator<T> extends Placeholder {
 
 	@Override
 	public void initialise() {
-		super.initialise();
-
 		if (getListValues() != null) {
 			valueCache = Collections.unmodifiableList(Arrays.stream(getListValues()).map(this::toBson).collect(Collectors.toList()));
 		}

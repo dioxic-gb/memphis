@@ -9,11 +9,9 @@ import java.util.Optional;
 import org.bson.BsonDateTime;
 import org.bson.BsonInt32;
 import org.bson.BsonInt64;
-import org.bson.BsonNull;
 import org.bson.BsonValue;
 
 import com.mongodb.memphis.annotations.Name;
-import com.mongodb.memphis.engine.EngineDocument;
 
 @Name("epoch")
 public class EpochMutator extends Mutator {
@@ -21,29 +19,20 @@ public class EpochMutator extends Mutator {
 	ChronoField chronoField;
 
 	@Override
-	public BsonValue getValue(EngineDocument engineDocument, String[] attributes) {
-		String input = attributes.length > 1 ? attributes[1] : null;
+	protected BsonValue mutate(BsonValue value, String[] attributes) {
+		Long epoch = Optional.of(value)
+				.filter(BsonValue::isDateTime)
+				.map(BsonValue::asDateTime)
+				.map(BsonDateTime::getValue)
+				.orElseThrow(() -> new IllegalArgumentException("BsonValue is not a datetime type"));
 
-		Optional<Long> opt = Optional.ofNullable(engineDocument)
-			.map(EngineDocument::getDocument)
-			.map(o -> o.get(input))
-			.filter(BsonValue::isDateTime)
-			.map(BsonValue::asDateTime)
-			.map(BsonDateTime::getValue);
-
-		if (opt.isPresent()) {
-			if (chronoField != null) {
-				LocalDateTime dt = LocalDateTime.ofInstant(Instant.ofEpochMilli(opt.get()), ZoneOffset.UTC);
-				return chronoField.range().getMaximum() > Integer.MAX_VALUE ? new BsonInt64(dt.getLong(chronoField)) : new BsonInt32(dt.get(chronoField));
-			}
-			else {
-				// return the MSB
-				return new BsonInt32((int)(opt.get() & Integer.MAX_VALUE));
-			}
+		if (chronoField != null) {
+			LocalDateTime dt = LocalDateTime.ofInstant(Instant.ofEpochMilli(epoch), ZoneOffset.UTC);
+			return chronoField.range().getMaximum() > Integer.MAX_VALUE ? new BsonInt64(dt.getLong(chronoField)) : new BsonInt32(dt.get(chronoField));
 		}
 		else {
-			logger.warn("unable to get epoch value for field {}", input);
-			return new BsonNull();
+			// return the MSB
+			return new BsonInt32((int)(epoch & Integer.MAX_VALUE));
 		}
 	}
 

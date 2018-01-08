@@ -38,17 +38,17 @@ public class DateTimeGeneratorTest extends AbstractGeneratorTest {
 
 	@Test
 	public void generatorDefault() throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-		
+
 		DateTimeGenerator generator = new DateTimeGenerator();
 		generator.initialise();
-		
+
 		for (int i=0; i<100; i++) {
 			BsonValue bsonValue = generator.getValue();
-			
+
 			assertThat(bsonValue.isDateTime()).as("is datetime").isTrue();
 			assertThat(bsonValue.asDateTime().getValue()).as("generated value in range").isBetween(Long.MIN_VALUE, Long.MAX_VALUE);
-			
-			logger.info("Generated date: {}", Instant.ofEpochMilli(bsonValue.asDateTime().getValue()));
+
+			logger.debug("Generated date: {}", Instant.ofEpochMilli(bsonValue.asDateTime().getValue()));
 		}
 	}
 }

@@ -15,7 +15,6 @@ import org.bson.BsonValue;
 import com.mongodb.memphis.config.Template;
 import com.mongodb.memphis.placeholder.Placeholder;
 import com.mongodb.memphis.placeholder.Placeholder.Scope;
-import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
 
 public class DocumentPool {
 	private int batchOffset;
@@ -122,7 +121,7 @@ public class DocumentPool {
 		return getBatchDocuments().get(0);
 	}
 
-	class Batch {
+	public static class Batch {
 		private List<EngineDocument> docs;
 		private Map<Placeholder, BsonValue> placeholderValues;
 		private Set<Placeholder> placeholders;
@@ -160,8 +159,8 @@ public class DocumentPool {
 			}
 		}
 
-		public void applyCachedValue(PlaceholderLocation locator) {
-			locator.apply(placeholderValues.get(locator.getPlaceholder()));
+		public BsonValue getCachedValue(Placeholder placeholder) {
+			return placeholderValues.get(placeholder);
 		}
 	}
 
