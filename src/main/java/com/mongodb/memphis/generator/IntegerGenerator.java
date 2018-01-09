@@ -8,7 +8,7 @@ import com.mongodb.memphis.annotations.Name;
 @Name("integer")
 public class IntegerGenerator extends Generator<Integer> {
 
-	int min = Integer.MIN_VALUE;
+	int min = 0;
 	int max = Integer.MAX_VALUE;
 	Integer[] list;
 

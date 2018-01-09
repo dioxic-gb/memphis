@@ -8,7 +8,7 @@ import com.mongodb.memphis.annotations.Name;
 @Name("long")
 public class LongGenerator extends Generator<Long> {
 
-	long min = Long.MIN_VALUE;
+	long min = 0;
 	long max = Long.MAX_VALUE;
 	Long[] list;
 
