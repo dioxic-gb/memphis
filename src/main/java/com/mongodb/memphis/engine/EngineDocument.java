@@ -57,6 +57,11 @@ public class EngineDocument {
 	}
 
 	public void regenerateValues(Batch batch) {
+		// clear the _id if the template doesn't specify this field as it will have been added dynamically for the previous batch
+		if (!template.hasId()) {
+			document.remove("_id");
+		}
+		
 		// cache values for placeholders in DOCUMENT mode
 		for (Placeholder p : placeholderMap.values()) {
 			if (p.getScope() == Scope.DOCUMENT) {

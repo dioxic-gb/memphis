@@ -75,6 +75,10 @@ public class Template extends Config {
 
 		PlaceholderFactory.getInstance().load(placeholderFile);
 	}
+	
+	public boolean hasId() {
+		return referenceDocument.containsKey("_id");
+	}
 
 	@Override
 	protected void executeInternal() {

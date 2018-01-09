@@ -11,12 +11,16 @@ import java.util.stream.Collectors;
 
 import org.bson.BsonDocument;
 import org.bson.BsonValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.mongodb.memphis.config.Template;
 import com.mongodb.memphis.placeholder.Placeholder;
 import com.mongodb.memphis.placeholder.Placeholder.Scope;
 
 public class DocumentPool {
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	private int batchOffset;
 	protected int batchSize;
 	protected List<Template> templates;
@@ -60,7 +64,7 @@ public class DocumentPool {
 		while (poolSize % minPoolSize != 0) {
 			poolSize++;
 		}
-
+		
 		return poolSize;
 	}
 
@@ -88,9 +92,12 @@ public class DocumentPool {
 		for (Template t : weightedList) {
 			pool.add(new EngineDocument(t));
 		}
+		
+		logger.debug("initialized document pool [size={}]", pool.size());
 	}
 
 	public void nextBatch(int iteration) {
+		logger.debug("getting next document batch");
 		batch.clear();
 		for (int i = 0; i < batchSize; i++) {
 			if (batchOffset >= pool.size()) {
@@ -122,6 +129,7 @@ public class DocumentPool {
 	}
 
 	public static class Batch {
+		private final Logger logger = LoggerFactory.getLogger(getClass());
 		private List<EngineDocument> docs;
 		private Map<Placeholder, BsonValue> placeholderValues;
 		private Set<Placeholder> placeholders;
@@ -148,6 +156,7 @@ public class DocumentPool {
 		}
 
 		private void regenerateValues() {
+			logger.debug("regenerating batch placeholder values");
 			for (Placeholder p : placeholders) {
 				if (p.getScope() == Scope.BATCH) {
 					placeholderValues.put(p, p.getValue());
