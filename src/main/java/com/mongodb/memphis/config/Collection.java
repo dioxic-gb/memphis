@@ -35,13 +35,13 @@ public class Collection {
 		MongoCollection<BsonDocument> collection = mongoDatabase.getCollection(name, BsonDocument.class);
 
 		if (writeConcern != null) {
-			collection.withWriteConcern(writeConcern);
+			collection = collection.withWriteConcern(writeConcern);
 		}
 		if (readConcern != null) {
-			collection.withReadConcern(readConcern);
+			collection = collection.withReadConcern(readConcern);
 		}
 		if (readPreference != null) {
-			collection.withReadPreference(readPreference);
+			collection = collection.withReadPreference(readPreference);
 		}
 
 		return collection;
