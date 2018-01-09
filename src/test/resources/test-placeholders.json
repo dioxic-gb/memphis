@@ -1,0 +1,52 @@
+{
+  "ts": {
+    "type": "datetime",
+    "min": "2017-01-01T00:00:00",
+    "max": "2017-01-02T00:00:00"
+  },
+  "im": {
+    "type": "long"
+  },
+  "ms": {
+    "type": "long",
+    "list": [1,2,3,4,5,6,1000000]
+  },
+  "oa": {
+    "type": "string",
+    "cardinality": 500,
+    "distribution": {
+      "type": "geometric",
+      "probability": 0.4
+    }
+  },
+  "da": {
+    "type": "string",
+    "list": ["ABC", "DEF", "GHJ"]
+  },
+  "pi": {
+    "type": "integer",
+    "min": "0",
+    "max": "1000",
+    "cardinality": 10
+  },
+  "zt": {
+    "type": "string",
+    "length": "5",
+    "saltChars": "ABCDEF"
+  },
+  "et": {
+    "type": "integer",
+    "min": "0",
+    "max": "10",
+    "mode": "DOCUMENT"
+  },
+  "shardNumber": {
+    "type": "integer",
+    "min": "0",
+    "max": "8",
+    "mode": "BATCH"
+  },
+  "oid": {
+    "type": "objectId"
+  }
+}
