@@ -1,4 +1,4 @@
-package com.mongodb.memphis.operations;
+package com.mongodb.memphis.operation;
 
 import java.util.List;
 

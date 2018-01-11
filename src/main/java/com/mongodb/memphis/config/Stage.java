@@ -3,7 +3,7 @@ package com.mongodb.memphis.config;
 import java.util.Arrays;
 import java.util.List;
 
-import com.mongodb.memphis.operations.Operation;
+import com.mongodb.memphis.operation.Operation;
 
 public class Stage extends Config {
 

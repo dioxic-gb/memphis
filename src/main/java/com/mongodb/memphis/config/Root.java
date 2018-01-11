@@ -24,8 +24,8 @@ import com.mongodb.memphis.config.adapters.IndexModelAdapterFactory;
 import com.mongodb.memphis.config.adapters.ReadConcernTypeAdapter;
 import com.mongodb.memphis.config.adapters.ReadPreferenceTypeAdapter;
 import com.mongodb.memphis.config.adapters.WriteConcernTypeAdapter;
-import com.mongodb.memphis.operations.Operation;
-import com.mongodb.memphis.operations.SampleData;
+import com.mongodb.memphis.operation.Operation;
+import com.mongodb.memphis.operation.SampleData;
 import com.mongodb.memphis.util.gson.typeadapters.RuntimeTypeAdapterFactory;
 
 public class Root extends Config {
