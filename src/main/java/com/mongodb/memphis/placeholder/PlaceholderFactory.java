@@ -79,7 +79,6 @@ public class PlaceholderFactory {
 		// initialise placeholders
 		for (Entry<String, Placeholder> entry : placeholderMap.entrySet()) {
 			entry.getValue().initialise();
-			entry.getValue().setKey(entry.getKey());
 		}
 
 		parserMap.put(key, new PlaceholderParser(placeholderMap));

@@ -11,21 +11,12 @@ public abstract class Placeholder implements Comparable<Placeholder> {
 
 	protected transient Logger logger = LoggerFactory.getLogger(getClass());
 	protected int priority = -1;
-	protected String key;
 
 	public abstract void initialise();
 
 	public Scope getScope() {
 		return Scope.DEFAULT;
 	};
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
 
 	@Override
 	public int compareTo(Placeholder o) {
