@@ -56,14 +56,7 @@ public class Template extends Config {
 
 	@Override
 	public void initialise() {
-		Path templatePath = Paths.get(templateFile);
-
-		if (!Files.exists(templatePath)) {
-			throw new IllegalStateException(templatePath.toString() + " cannot be found!");
-		}
-		if (Files.isDirectory(templatePath)) {
-			throw new IllegalStateException(templatePath.toString() + " is a directory!");
-		}
+		Path templatePath = resolveFile(templateFile);
 
 		try {
 			referenceDocument = BsonDocument.parse(new String(Files.readAllBytes(templatePath)));
@@ -73,15 +66,33 @@ public class Template extends Config {
 			throw new RuntimeException(e);
 		}
 
-		PlaceholderFactory.getInstance().load(placeholderFile);
+		PlaceholderFactory.getInstance().loadFromFile(placeholderFile, resolveFile(placeholderFile));
 	}
-	
+
 	public boolean hasId() {
 		return referenceDocument.containsKey("_id");
 	}
 
 	@Override
 	protected void executeInternal() {
+	}
+
+	private Path resolveFile(String filename) {
+		Path path = Paths.get(filename);
+
+		if (!Files.exists(path)) {
+			// try file relative to config file
+			path = Paths.get(getRoot().getConfigFilePath().toString(), filename);
+
+			if (!Files.exists(path)) {
+				throw new IllegalStateException(path.toString() + " cannot be found!");
+			}
+		}
+		if (Files.isDirectory(path)) {
+			throw new IllegalStateException(path.toString() + " is a directory!");
+		}
+
+		return path;
 	}
 
 }

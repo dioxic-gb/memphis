@@ -3,7 +3,7 @@ package com.mongodb.memphis.placeholder;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,35 +71,38 @@ public class PlaceholderFactory {
 		return instance;
 	}
 
-	public void load(String placeholderFile) {
+	public void loadFromJson(String key, String json) {
+		// use gson to parse the placeholder json
+		Map<String, Placeholder> placeholderMap = gson.fromJson(json, new TypeToken<Map<String, Placeholder>>() {
+		}.getType());
+
+		// initialise placeholders
+		for (Entry<String, Placeholder> entry : placeholderMap.entrySet()) {
+			entry.getValue().initialise();
+			entry.getValue().setKey(entry.getKey());
+		}
+
+		parserMap.put(key, new PlaceholderParser(placeholderMap));
+	}
+
+	public void loadFromFile(String key, Path path) {
 		try {
-			PlaceholderParser parser = parserMap.get(placeholderFile);
+			PlaceholderParser parser = parserMap.get(key);
 
 			if (parser == null) {
-				logger.debug("loading placeholder file {}", placeholderFile);
-				String json = new String(Files.readAllBytes(Paths.get(placeholderFile)), StandardCharsets.UTF_8);
+				logger.debug("loading placeholder file {}", path);
 
-				// use gson to parse the placeholder json
-				Map<String, Placeholder> placeholderMap = gson.fromJson(json, new TypeToken<Map<String, Placeholder>>() {
-				}.getType());
-
-				// initialise placeholders
-				for (Entry<String, Placeholder> entry  : placeholderMap.entrySet()) {
-					entry.getValue().initialise();
-					entry.getValue().setKey(entry.getKey());
-				}
-
-				parserMap.put(placeholderFile, new PlaceholderParser(placeholderMap));
+				loadFromJson(key, new String(Files.readAllBytes(path), StandardCharsets.UTF_8));
 			}
 		}
 		catch (IOException e) {
-			logger.error("{} - could not parse placeholder file {}", e.getClass().getSimpleName(), placeholderFile);
+			logger.error("{} - could not parse placeholder file {}", e.getClass().getSimpleName(), path);
 			throw new RuntimeException(e);
 		}
 	}
 
-	public PlaceholderParser getParser(String placeholderFile) {
-		return parserMap.get(placeholderFile);
+	public PlaceholderParser getParser(String key) {
+		return parserMap.get(key);
 	}
 
 }

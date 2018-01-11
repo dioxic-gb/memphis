@@ -38,7 +38,13 @@ public class InsertMany extends DataOperation {
 
 	@Override
 	protected void execute(MongoCollection<BsonDocument> collection, DocumentPool documentPool, Results results) {
-		collection.insertMany(documentPool.getBatchDocuments(), options);
+		if (options != null) {
+			collection.insertMany(documentPool.getBatchDocuments(), options);
+		}
+		else {
+			collection.insertMany(documentPool.getBatchDocuments());
+		}
+
 		results.bytesWritten(documentPool.getBatchSize());
 		results.docsWritten(batchSize);
 	}

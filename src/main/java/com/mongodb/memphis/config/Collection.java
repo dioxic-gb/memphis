@@ -15,6 +15,12 @@ public class Collection {
 	private ReadConcern readConcern;
 	private ReadPreference readPreference;
 
+	public Collection() {}
+
+	public Collection(String name) {
+		this.name = name;
+	}
+
 	public final String getName() {
 		return name;
 	}

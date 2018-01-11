@@ -53,7 +53,7 @@ public abstract class DataOperation extends Operation {
 	protected abstract void execute(MongoCollection<BsonDocument> collection, DocumentPool documentPool, Results results);
 
 	@Override
-	public void executeInternal() {
+	protected void executeInternal() {
 		ExecutorService executor = Executors.newFixedThreadPool(threads);
 		List<Worker> tasks = new ArrayList<>(threads);
 

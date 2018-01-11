@@ -3,6 +3,7 @@ package com.mongodb.memphis.config;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -29,6 +30,8 @@ import com.mongodb.memphis.util.gson.typeadapters.RuntimeTypeAdapterFactory;
 
 public class Root extends Config {
 
+	private static final Collection DEFAULT_COLLECTION = new Collection("memphis");
+	private static final String DEFAULT_DATABASE = "test";
 	private static Gson gson;
 
 	static {
@@ -56,11 +59,12 @@ public class Root extends Config {
 				.create();
 	}
 
-	private String mongoUri;
+	private String mongoUri = "localhost:27017";
 	private List<Test> tests;
 	private List<SampleData> samplers;
 
 	private transient MongoClient client;
+	private transient Path configFilePath;
 
 	@Override
 	public MongoClient getMongoClient() {
@@ -84,6 +88,8 @@ public class Root extends Config {
 				.maxConnectionIdleTime(0);
 
 		client = new MongoClient(new MongoClientURI("mongodb://" + mongoUri, builder));
+		collection = DEFAULT_COLLECTION;
+		database = DEFAULT_DATABASE;
 
 		super.initialiseHierarchy(null, 0);
 	}
@@ -103,6 +109,11 @@ public class Root extends Config {
 	}
 
 	@Override
+	protected Root getRoot() {
+		return this;
+	}
+
+	@Override
 	public List<Test> getChildren() {
 		return tests;
 	}
@@ -112,8 +123,15 @@ public class Root extends Config {
 	}
 
 	public static Root loadFromFile(String filename) throws IOException {
-		String configJson = new String(Files.readAllBytes(Paths.get(filename)), StandardCharsets.UTF_8);
-		return loadFromJson(configJson);
+		Path configFile = Paths.get(filename);
+		String configJson = new String(Files.readAllBytes(configFile), StandardCharsets.UTF_8);
+		Root root = loadFromJson(configJson);
+		root.configFilePath = configFile.getParent().toAbsolutePath();
+		return root;
+	}
+
+	public Path getConfigFilePath() {
+		return configFilePath;
 	}
 
 	@Override

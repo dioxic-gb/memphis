@@ -17,8 +17,8 @@ public abstract class Config {
 	protected transient Config parent;
 	protected transient int depth;
 	protected String name;
-	private String database;
-	private Collection collection;
+	protected String database;
+	protected Collection collection;
 
 	public final String getDatabase() {
 		if (database == null) {
@@ -89,6 +89,14 @@ public abstract class Config {
 			s = "  " + s;
 		}
 		return s;
+	}
+
+	protected Config getParent() {
+		return parent;
+	}
+
+	protected Root getRoot() {
+		return parent.getRoot();
 	}
 
 	protected abstract void executeInternal();

@@ -78,7 +78,7 @@ public abstract class Generator<T> extends Placeholder {
 				sampler = distribution.createSampler(RandomSource.create(RandomSource.WELL_44497_B));
 			}
 			else {
-				sampler = new UniformIntegerDistribution(0, valueCache.size()).createSampler(RandomSource.create(RandomSource.WELL_44497_B));
+				sampler = new UniformIntegerDistribution(0, valueCache.size()-1).createSampler(RandomSource.create(RandomSource.WELL_44497_B));
 			}
 		}
 	}
