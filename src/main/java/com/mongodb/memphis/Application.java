@@ -44,7 +44,6 @@ public class Application {
 
 		try {
 			Root root = options.getConfig();
-			root.initialise();
 			root.execute();
 		}
 		catch (IOException e) {

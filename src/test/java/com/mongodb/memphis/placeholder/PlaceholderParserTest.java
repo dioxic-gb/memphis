@@ -29,7 +29,7 @@ public class PlaceholderParserTest {
 	@ValueSource(strings = {"test1","test2","test3","test4"})
 	public void parameterizedPlaceholder(String placeholderKey) {
 		BsonDocument doc = constructDocument(placeholderKey + ":input", 5);
-		PlaceholderParser parser = new PlaceholderParser(placeholderMap);
+		PlaceholderFile parser = new PlaceholderFile(placeholderMap);
 
 		List<PlaceholderLocation> locs = parser.parseDocument(doc);
 
@@ -43,7 +43,7 @@ public class PlaceholderParserTest {
 	@ValueSource(strings = {"test1","test2","test3","test4"})
 	public void basicPlaceholder(String placeholderKey) {
 		BsonDocument doc = constructDocument(placeholderKey, 5);
-		PlaceholderParser parser = new PlaceholderParser(placeholderMap);
+		PlaceholderFile parser = new PlaceholderFile(placeholderMap);
 
 		List<PlaceholderLocation> locs = parser.parseDocument(doc);
 

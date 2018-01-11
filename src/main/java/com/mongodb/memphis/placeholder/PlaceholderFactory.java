@@ -7,8 +7,8 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import org.bson.BsonValue;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,17 +17,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.mongodb.memphis.annotations.Name;
+import com.mongodb.memphis.config.adapters.BsonValueTypeAdapter;
 import com.mongodb.memphis.config.adapters.LocalDateTimeTypeAdapter;
 import com.mongodb.memphis.distribution.IntegerDistributionWrapper;
+import com.mongodb.memphis.util.FileUtil;
 import com.mongodb.memphis.util.gson.typeadapters.RuntimeTypeAdapterFactory;
 
 public class PlaceholderFactory {
 	private final static Logger logger = LoggerFactory.getLogger(PlaceholderFactory.class);
 
-	private Map<String, PlaceholderParser> parserMap;
-
 	private static Gson gson;
 	private static PlaceholderFactory instance;
+
+	private Map<String, PlaceholderFile> pFileMap;
 
 	static {
 		Reflections reflections = new Reflections("com.mongodb.memphis");
@@ -56,12 +58,13 @@ public class PlaceholderFactory {
 				.setPrettyPrinting()
 				.registerTypeAdapterFactory(placeholderAdapterFactory)
 				.registerTypeAdapterFactory(distributionAdapterFactory)
+				.registerTypeAdapter(BsonValue.class, new BsonValueTypeAdapter())
 				.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
 				.create();
 	}
 
 	private PlaceholderFactory() {
-		parserMap = new HashMap<>();
+		pFileMap = new HashMap<>();
 	}
 
 	public static PlaceholderFactory getInstance() {
@@ -71,28 +74,36 @@ public class PlaceholderFactory {
 		return instance;
 	}
 
-	public void loadFromJson(String key, String json) {
+	public PlaceholderFile loadFromJson(String key, String json) {
 		// use gson to parse the placeholder json
 		Map<String, Placeholder> placeholderMap = gson.fromJson(json, new TypeToken<Map<String, Placeholder>>() {
 		}.getType());
 
+		PlaceholderFile pFile = new PlaceholderFile(placeholderMap);
+		pFileMap.put(key, pFile);
+
 		// initialise placeholders
-		for (Entry<String, Placeholder> entry : placeholderMap.entrySet()) {
-			entry.getValue().initialise();
+		for (Placeholder p : placeholderMap.values()) {
+			p.initialise();
+			p.setPlaceholderFile(pFile);
 		}
 
-		parserMap.put(key, new PlaceholderParser(placeholderMap));
+		return pFile;
 	}
 
-	public void loadFromFile(String key, Path path) {
+	public PlaceholderFile loadFromFile(String filename) {
+		Path path = FileUtil.resolveFile(filename);
 		try {
-			PlaceholderParser parser = parserMap.get(key);
+			//PlaceholderParser parser = parserMap.get(filename);
+			PlaceholderFile file = pFileMap.get(filename);
 
-			if (parser == null) {
+			if (file == null) {
 				logger.debug("loading placeholder file {}", path);
 
-				loadFromJson(key, new String(Files.readAllBytes(path), StandardCharsets.UTF_8));
+				file = loadFromJson(filename, new String(Files.readAllBytes(path), StandardCharsets.UTF_8));
 			}
+
+			return file;
 		}
 		catch (IOException e) {
 			logger.error("{} - could not parse placeholder file {}", e.getClass().getSimpleName(), path);
@@ -100,8 +111,8 @@ public class PlaceholderFactory {
 		}
 	}
 
-	public PlaceholderParser getParser(String key) {
-		return parserMap.get(key);
+	public PlaceholderFile getParser(String key) {
+		return pFileMap.get(key);
 	}
 
 }

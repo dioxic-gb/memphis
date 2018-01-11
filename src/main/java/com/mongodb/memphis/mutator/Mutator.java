@@ -26,7 +26,7 @@ public abstract class Mutator extends Placeholder {
 		// source key
 		String key = attributes[1];
 
-		BsonValue value = Optional.ofNullable(engineDocument.getPlaceholder(key))
+		BsonValue value = Optional.ofNullable(placeholderFile.getPlaceholder(key))
 				.map(o -> o.getScopedValue(engineDocument, batch, attributes))
 				.orElse(engineDocument.getFieldValue(key));
 

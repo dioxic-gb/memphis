@@ -20,7 +20,7 @@ import com.mongodb.memphis.placeholder.Placeholder.Scope;
 
 public class DocumentPool {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	private int batchOffset;
 	protected int batchSize;
 	protected List<Template> templates;
@@ -64,7 +64,7 @@ public class DocumentPool {
 		while (poolSize % minPoolSize != 0) {
 			poolSize++;
 		}
-		
+
 		return poolSize;
 	}
 
@@ -92,7 +92,7 @@ public class DocumentPool {
 		for (Template t : weightedList) {
 			pool.add(new EngineDocument(t));
 		}
-		
+
 		logger.debug("initialized document pool [size={}]", pool.size());
 	}
 
@@ -157,7 +157,12 @@ public class DocumentPool {
 
 		private void regenerateValues() {
 			logger.debug("regenerating batch placeholder values");
-			for (Placeholder p : placeholders) {
+
+			// sort placeholders to make sure they are processed in priority order
+			List<Placeholder> placeholderList = new ArrayList<>(placeholders);
+			Collections.sort(placeholderList);
+
+			for (Placeholder p : placeholderList) {
 				if (p.getScope() == Scope.BATCH) {
 					placeholderValues.put(p, p.getValue());
 				}
@@ -166,6 +171,10 @@ public class DocumentPool {
 			for (EngineDocument doc : docs) {
 				doc.regenerateValues(this);
 			}
+		}
+
+		public Set<Placeholder> getPlaceholders() {
+			return placeholders;
 		}
 
 		public BsonValue getCachedValue(Placeholder placeholder) {

@@ -35,7 +35,7 @@ public abstract class DataOperation extends Operation {
 	}
 
 	@Override
-	protected void initialise() {
+	public void initialise() {
 		super.initialise();
 		operationResults = new Results(getThreads(), getIterations());
 	}

@@ -14,7 +14,7 @@ import com.mongodb.memphis.config.Template;
 import com.mongodb.memphis.engine.DocumentPool.Batch;
 import com.mongodb.memphis.placeholder.Placeholder;
 import com.mongodb.memphis.placeholder.Placeholder.Scope;
-import com.mongodb.memphis.placeholder.PlaceholderParser;
+import com.mongodb.memphis.placeholder.PlaceholderFile;
 import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
 
 public class EngineDocument {
@@ -22,14 +22,12 @@ public class EngineDocument {
 	private Template template;
 	private BsonDocument document;
 	private List<PlaceholderLocation> placeholderLocations;
-	private Map<String, Placeholder> placeholderMap;
 
 	public EngineDocument(Template template) {
-		PlaceholderParser parser = template.getPlaceholderParser();
+		PlaceholderFile parser = template.getPlaceholderFile();
 		this.document = template.getReferenceDocument().clone();
 		this.template = template;
 		this.placeholderLocations = parser.parseDocument(document);
-		this.placeholderMap = parser.getPlaceholderMap();
 	}
 
 	public BsonDocument getDocument() {
@@ -45,11 +43,7 @@ public class EngineDocument {
 	}
 
 	public Collection<Placeholder> getPlaceholders() {
-		return placeholderMap.values();
-	}
-
-	public Placeholder getPlaceholder(String key) {
-		return placeholderMap.get(key);
+		return template.getPlaceholderFile().getPlaceholders();
 	}
 
 	public BsonValue getCachedValue(Placeholder placeholder) {
@@ -61,13 +55,13 @@ public class EngineDocument {
 		if (!template.hasId()) {
 			document.remove("_id");
 		}
-		
+
 		// cache values for placeholders in DOCUMENT mode
-		for (Placeholder p : placeholderMap.values()) {
+		for (Placeholder p : template.getPlaceholderFile().getPlaceholders()) {
 			if (p.getScope() == Scope.DOCUMENT) {
 				// lazy load map for efficiency - mostly this won't be used
 				if (placeholderValues == null) {
-					placeholderValues = new HashMap<>(placeholderMap.size());
+					placeholderValues = new HashMap<>();
 				}
 				placeholderValues.put(p, p.getValue());
 			}

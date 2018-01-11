@@ -1,6 +1,7 @@
 package com.mongodb.memphis.placeholder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,18 +29,26 @@ import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
  * @author Mark Baker-Munton
  */
 @ThreadSafe
-public class PlaceholderParser {
+public class PlaceholderFile {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final Pattern pattern = Pattern.compile("\\$\\{(.+)\\}");
 
 	private final Map<String, Placeholder> placeholderMap;
 
-	public PlaceholderParser(Map<String, Placeholder> placeholderMap) {
+	public PlaceholderFile(Map<String, Placeholder> placeholderMap) {
 		this.placeholderMap = placeholderMap;
 	}
 
 	public Map<String, Placeholder> getPlaceholderMap() {
 		return placeholderMap;
+	}
+
+	public Collection<Placeholder> getPlaceholders() {
+		return placeholderMap.values();
+	}
+
+	public Placeholder getPlaceholder(String key) {
+		return placeholderMap.get(key);
 	}
 
 	/**

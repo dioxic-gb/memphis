@@ -42,7 +42,7 @@ public abstract class Config {
 		return getCollection().getMongoCollection(getMongoDatabase());
 	}
 
-	protected void initialise() {
+	public void initialise() {
 	}
 
 	protected final void initialiseHierarchy(Config parent, int depth) {
@@ -51,7 +51,6 @@ public abstract class Config {
 		if (getChildren() != null) {
 			for (Config child : getChildren()) {
 				child.initialiseHierarchy(this, depth+1);
-				child.initialise();
 			}
 		}
 	}

@@ -9,7 +9,9 @@ import com.mongodb.memphis.engine.EngineDocument;
 
 public abstract class Placeholder implements Comparable<Placeholder> {
 
-	protected transient Logger logger = LoggerFactory.getLogger(getClass());
+	protected transient final Logger logger = LoggerFactory.getLogger(getClass());
+	protected transient PlaceholderFile placeholderFile;
+
 	protected int priority = -1;
 
 	public abstract void initialise();
@@ -28,6 +30,10 @@ public abstract class Placeholder implements Comparable<Placeholder> {
 	 */
 	public int getPriority() {
 		return priority;
+	}
+
+	public void setPlaceholderFile(PlaceholderFile placeholderFile) {
+		this.placeholderFile = placeholderFile;
 	}
 
 	/**

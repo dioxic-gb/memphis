@@ -20,12 +20,16 @@ import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 import com.mongodb.memphis.annotations.Name;
 import com.mongodb.memphis.config.adapters.BsonTypeAdapter;
+import com.mongodb.memphis.config.adapters.ConfigPostProcessor;
 import com.mongodb.memphis.config.adapters.IndexModelAdapterFactory;
+import com.mongodb.memphis.config.adapters.PlaceholderFileTypeAdapter;
 import com.mongodb.memphis.config.adapters.ReadConcernTypeAdapter;
 import com.mongodb.memphis.config.adapters.ReadPreferenceTypeAdapter;
 import com.mongodb.memphis.config.adapters.WriteConcernTypeAdapter;
 import com.mongodb.memphis.operation.Operation;
 import com.mongodb.memphis.operation.SampleData;
+import com.mongodb.memphis.placeholder.PlaceholderFile;
+import com.mongodb.memphis.util.FileUtil;
 import com.mongodb.memphis.util.gson.typeadapters.RuntimeTypeAdapterFactory;
 
 public class Root extends Config {
@@ -52,6 +56,8 @@ public class Root extends Config {
 				//.excludeFieldsWithoutExposeAnnotation()
 				.registerTypeAdapterFactory(operationAdapterFactory)
 				.registerTypeAdapterFactory(new IndexModelAdapterFactory())
+				.registerTypeAdapterFactory(new ConfigPostProcessor())
+				.registerTypeAdapter(PlaceholderFile.class, new PlaceholderFileTypeAdapter())
 				.registerTypeAdapter(WriteConcern.class, new WriteConcernTypeAdapter())
 				.registerTypeAdapter(ReadConcern.class, new ReadConcernTypeAdapter())
 				.registerTypeAdapter(ReadPreference.class, new ReadPreferenceTypeAdapter())
@@ -64,7 +70,6 @@ public class Root extends Config {
 	private List<SampleData> samplers;
 
 	private transient MongoClient client;
-	private transient Path configFilePath;
 
 	@Override
 	public MongoClient getMongoClient() {
@@ -124,14 +129,10 @@ public class Root extends Config {
 
 	public static Root loadFromFile(String filename) throws IOException {
 		Path configFile = Paths.get(filename);
+		FileUtil.addDirectory(configFile.getParent().toAbsolutePath().toString());
 		String configJson = new String(Files.readAllBytes(configFile), StandardCharsets.UTF_8);
 		Root root = loadFromJson(configJson);
-		root.configFilePath = configFile.getParent().toAbsolutePath();
 		return root;
-	}
-
-	public Path getConfigFilePath() {
-		return configFilePath;
 	}
 
 	@Override

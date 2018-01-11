@@ -6,16 +6,12 @@ import org.bson.BsonDocument;
 import org.bson.BsonInt32;
 import org.bson.BsonString;
 import org.bson.conversions.Bson;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 public class BsonTypeAdapter extends TypeAdapter<Bson> {
-
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
 	public void write(JsonWriter out, Bson value) throws IOException {

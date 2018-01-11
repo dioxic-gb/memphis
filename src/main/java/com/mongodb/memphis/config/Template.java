@@ -3,16 +3,15 @@ package com.mongodb.memphis.config;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.bson.BsonDocument;
 
-import com.mongodb.memphis.placeholder.PlaceholderFactory;
-import com.mongodb.memphis.placeholder.PlaceholderParser;
+import com.mongodb.memphis.placeholder.PlaceholderFile;
+import com.mongodb.memphis.util.FileUtil;
 
 public class Template extends Config {
 	private String templateFile;
-	private String placeholderFile;
+	private PlaceholderFile placeholderFile;
 	private int weighting = 1;
 
 	private transient BsonDocument referenceDocument;
@@ -28,10 +27,6 @@ public class Template extends Config {
 
 	public final BsonDocument getReferenceDocument() {
 		return referenceDocument;
-	}
-
-	public void setPlaceholderFile(String placeholderFile) {
-		this.placeholderFile = placeholderFile;
 	}
 
 	public void setWeighting(int weighting) {
@@ -50,13 +45,13 @@ public class Template extends Config {
 		this.documentSize = documentSize;
 	}
 
-	public PlaceholderParser getPlaceholderParser() {
-		return PlaceholderFactory.getInstance().getParser(placeholderFile);
+	public PlaceholderFile getPlaceholderFile() {
+		return placeholderFile;
 	}
 
 	@Override
 	public void initialise() {
-		Path templatePath = resolveFile(templateFile);
+		Path templatePath = FileUtil.resolveFile(templateFile);
 
 		try {
 			referenceDocument = BsonDocument.parse(new String(Files.readAllBytes(templatePath)));
@@ -66,7 +61,7 @@ public class Template extends Config {
 			throw new RuntimeException(e);
 		}
 
-		PlaceholderFactory.getInstance().loadFromFile(placeholderFile, resolveFile(placeholderFile));
+		//PlaceholderFactory.getInstance().loadFromFile(placeholderFile);
 	}
 
 	public boolean hasId() {
@@ -75,24 +70,6 @@ public class Template extends Config {
 
 	@Override
 	protected void executeInternal() {
-	}
-
-	private Path resolveFile(String filename) {
-		Path path = Paths.get(filename);
-
-		if (!Files.exists(path)) {
-			// try file relative to config file
-			path = Paths.get(getRoot().getConfigFilePath().toString(), filename);
-
-			if (!Files.exists(path)) {
-				throw new IllegalStateException(path.toString() + " cannot be found!");
-			}
-		}
-		if (Files.isDirectory(path)) {
-			throw new IllegalStateException(path.toString() + " is a directory!");
-		}
-
-		return path;
 	}
 
 }
