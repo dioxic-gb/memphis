@@ -53,7 +53,7 @@ public class Root extends Config {
 
 		gson = new GsonBuilder()
 				.setPrettyPrinting()
-				//.excludeFieldsWithoutExposeAnnotation()
+				// .excludeFieldsWithoutExposeAnnotation()
 				.registerTypeAdapterFactory(operationAdapterFactory)
 				.registerTypeAdapterFactory(new IndexModelAdapterFactory())
 				.registerTypeAdapterFactory(new ConfigPostProcessor())
@@ -93,8 +93,12 @@ public class Root extends Config {
 				.maxConnectionIdleTime(0);
 
 		client = new MongoClient(new MongoClientURI("mongodb://" + mongoUri, builder));
-		collection = DEFAULT_COLLECTION;
-		database = DEFAULT_DATABASE;
+		if (collection == null) {
+			collection = DEFAULT_COLLECTION;
+		}
+		if (database == null) {
+			database = DEFAULT_DATABASE;
+		}
 
 		super.initialiseHierarchy(null, 0);
 	}
