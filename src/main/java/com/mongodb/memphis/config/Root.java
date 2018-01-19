@@ -92,7 +92,12 @@ public class Root extends Config {
 				.applicationName("Memphis")
 				.maxConnectionIdleTime(0);
 
-		client = new MongoClient(new MongoClientURI("mongodb://" + mongoUri, builder));
+		// add the mongodb: prefix if not present
+		if (!mongoUri.startsWith("mongodb://")) {
+			mongoUri = "mongodb://" + mongoUri;
+		}
+
+		client = new MongoClient(new MongoClientURI(mongoUri, builder));
 		if (collection == null) {
 			collection = DEFAULT_COLLECTION;
 		}
