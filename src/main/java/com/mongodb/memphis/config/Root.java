@@ -22,13 +22,11 @@ import com.mongodb.memphis.annotations.Name;
 import com.mongodb.memphis.config.adapters.BsonTypeAdapter;
 import com.mongodb.memphis.config.adapters.ConfigPostProcessor;
 import com.mongodb.memphis.config.adapters.IndexModelAdapterFactory;
-import com.mongodb.memphis.config.adapters.PlaceholderFileTypeAdapter;
 import com.mongodb.memphis.config.adapters.ReadConcernTypeAdapter;
 import com.mongodb.memphis.config.adapters.ReadPreferenceTypeAdapter;
 import com.mongodb.memphis.config.adapters.WriteConcernTypeAdapter;
 import com.mongodb.memphis.operation.Operation;
 import com.mongodb.memphis.operation.SampleData;
-import com.mongodb.memphis.placeholder.PlaceholderFile;
 import com.mongodb.memphis.util.FileUtil;
 import com.mongodb.memphis.util.gson.typeadapters.RuntimeTypeAdapterFactory;
 
@@ -57,7 +55,6 @@ public class Root extends Config {
 				.registerTypeAdapterFactory(operationAdapterFactory)
 				.registerTypeAdapterFactory(new IndexModelAdapterFactory())
 				.registerTypeAdapterFactory(new ConfigPostProcessor())
-				.registerTypeAdapter(PlaceholderFile.class, new PlaceholderFileTypeAdapter())
 				.registerTypeAdapter(WriteConcern.class, new WriteConcernTypeAdapter())
 				.registerTypeAdapter(ReadConcern.class, new ReadConcernTypeAdapter())
 				.registerTypeAdapter(ReadPreference.class, new ReadPreferenceTypeAdapter())
@@ -68,6 +65,7 @@ public class Root extends Config {
 	private String mongoUri = "localhost:27017";
 	private List<Test> tests;
 	private List<SampleData> samplers;
+	private Filter filter;
 
 	private transient MongoClient client;
 
@@ -130,6 +128,15 @@ public class Root extends Config {
 	@Override
 	public List<Test> getChildren() {
 		return tests;
+	}
+
+	@Override
+	protected Filter getFilter() {
+		return filter;
+	}
+
+	public void setFilter(Filter filter) {
+		this.filter = filter;
 	}
 
 	public static Root loadFromJson(String configJson) {

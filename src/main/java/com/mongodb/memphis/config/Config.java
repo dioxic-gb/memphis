@@ -16,6 +16,7 @@ public abstract class Config {
 	protected transient final Logger logger = LoggerFactory.getLogger(getClass());
 	protected transient Config parent;
 	protected transient int depth;
+	protected boolean disabled = false;
 	protected String name;
 	protected String database;
 	protected Collection collection;
@@ -72,7 +73,9 @@ public abstract class Config {
 
 		long startTime = System.currentTimeMillis();
 
-		executeInternal();
+		if (!disabled && getFilter().accept(this)) {
+			executeInternal();
+		}
 
 		long totalTime = System.currentTimeMillis() - startTime;
 
@@ -96,6 +99,10 @@ public abstract class Config {
 
 	protected Root getRoot() {
 		return parent.getRoot();
+	}
+
+	protected Filter getFilter() {
+		return parent.getFilter();
 	}
 
 	protected abstract void executeInternal();

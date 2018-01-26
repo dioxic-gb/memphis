@@ -8,22 +8,15 @@ import com.mongodb.memphis.operation.Operation;
 public class Stage extends Config {
 
 	private Operation operation;
-	private boolean disabled = false;
 
 	public Operation getOperation() {
 		return operation;
 	}
 
-	public boolean isDisabled() {
-		return disabled;
-	}
-
 	@Override
 	public void executeInternal() {
 		if (operation != null) {
-			if (!disabled) {
-				operation.execute();
-			}
+			operation.execute();
 		}
 		else {
 			logger.warn("No operations to run for stage [{}]", name);

@@ -29,13 +29,13 @@ import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
  * @author Mark Baker-Munton
  */
 @ThreadSafe
-public class PlaceholderFile {
+public class PlaceholderParser {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final Pattern pattern = Pattern.compile("\\$\\{(.+)\\}");
 
 	private final Map<String, Placeholder> placeholderMap;
 
-	public PlaceholderFile(Map<String, Placeholder> placeholderMap) {
+	public PlaceholderParser(Map<String, Placeholder> placeholderMap) {
 		this.placeholderMap = placeholderMap;
 	}
 

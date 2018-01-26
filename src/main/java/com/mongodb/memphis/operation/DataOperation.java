@@ -15,7 +15,6 @@ import com.mongodb.memphis.engine.DocumentPool;
 import com.mongodb.memphis.engine.Results;
 
 public abstract class DataOperation extends Operation {
-
 	protected int threads = 1;
 	protected List<Template> templates;
 
@@ -38,12 +37,26 @@ public abstract class DataOperation extends Operation {
 	public void initialise() {
 		super.initialise();
 		operationResults = new Results(getThreads(), getIterations());
+
+		// set default template
+		if (templates == null) {
+			templates = new ArrayList<>();
+			templates.add(new Template(getDefaultTemplateFile(), getDefaultPlaceholderFile()));
+		}
 	}
 
 	@Override
 	protected void validate() {
 		super.validate();
 		Validate.notNull(templates, "templates not set for %s", this.getClass().getSimpleName());
+	}
+
+	protected String getDefaultTemplateFile() {
+		return null;
+	}
+
+	protected String getDefaultPlaceholderFile() {
+		return null;
 	}
 
 	protected abstract int getIterations();

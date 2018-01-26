@@ -23,13 +23,13 @@ import com.mongodb.memphis.distribution.IntegerDistributionWrapper;
 import com.mongodb.memphis.util.FileUtil;
 import com.mongodb.memphis.util.gson.typeadapters.RuntimeTypeAdapterFactory;
 
-public class PlaceholderFactory {
-	private final static Logger logger = LoggerFactory.getLogger(PlaceholderFactory.class);
+public class PlaceholderParserFactory {
+	private final static Logger logger = LoggerFactory.getLogger(PlaceholderParserFactory.class);
 
 	private static Gson gson;
-	private static PlaceholderFactory instance;
+	private static PlaceholderParserFactory instance;
 
-	private Map<String, PlaceholderFile> pFileMap;
+	private Map<String, PlaceholderParser> pFileMap;
 
 	static {
 		Reflections reflections = new Reflections("com.mongodb.memphis");
@@ -63,23 +63,23 @@ public class PlaceholderFactory {
 				.create();
 	}
 
-	private PlaceholderFactory() {
+	private PlaceholderParserFactory() {
 		pFileMap = new HashMap<>();
 	}
 
-	public static PlaceholderFactory getInstance() {
+	public static PlaceholderParserFactory getInstance() {
 		if (instance == null) {
-			instance = new PlaceholderFactory();
+			instance = new PlaceholderParserFactory();
 		}
 		return instance;
 	}
 
-	public PlaceholderFile loadFromJson(String key, String json) {
+	public PlaceholderParser loadFromJson(String key, String json) {
 		// use gson to parse the placeholder json
 		Map<String, Placeholder> placeholderMap = gson.fromJson(json, new TypeToken<Map<String, Placeholder>>() {
 		}.getType());
 
-		PlaceholderFile pFile = new PlaceholderFile(placeholderMap);
+		PlaceholderParser pFile = new PlaceholderParser(placeholderMap);
 		pFileMap.put(key, pFile);
 
 		// initialise placeholders
@@ -91,11 +91,11 @@ public class PlaceholderFactory {
 		return pFile;
 	}
 
-	public PlaceholderFile loadFromFile(String filename) {
+	public PlaceholderParser loadFromFile(String filename) {
 		Path path = FileUtil.resolveFile(filename);
 		try {
 			//PlaceholderParser parser = parserMap.get(filename);
-			PlaceholderFile file = pFileMap.get(filename);
+			PlaceholderParser file = pFileMap.get(filename);
 
 			if (file == null) {
 				logger.debug("loading placeholder file {}", path);
@@ -111,7 +111,7 @@ public class PlaceholderFactory {
 		}
 	}
 
-	public PlaceholderFile getParser(String key) {
+	public PlaceholderParser getParser(String key) {
 		return pFileMap.get(key);
 	}
 

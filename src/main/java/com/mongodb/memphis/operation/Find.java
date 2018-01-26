@@ -14,6 +14,8 @@ import com.mongodb.memphis.engine.Results;
 @Name("find")
 public class Find extends DataOperation {
 
+	private static final String DEFAULT_TEMPLATE_FILE = "query.json";
+
 	private int iterations = 1;
 	private int limit = -1;
 	private int batchSize = -1;
@@ -58,4 +60,8 @@ public class Find extends DataOperation {
 		return new DocumentPool(templates, 1);
 	}
 
+	@Override
+	protected String getDefaultTemplateFile() {
+		return DEFAULT_TEMPLATE_FILE;
+	}
 }

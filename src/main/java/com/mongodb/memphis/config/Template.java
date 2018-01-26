@@ -6,19 +6,35 @@ import java.nio.file.Path;
 
 import org.bson.BsonDocument;
 
-import com.mongodb.memphis.placeholder.PlaceholderFile;
+import com.mongodb.memphis.placeholder.PlaceholderParser;
+import com.mongodb.memphis.placeholder.PlaceholderParserFactory;
 import com.mongodb.memphis.util.FileUtil;
 
 public class Template extends Config {
-	private String templateFile;
-	private PlaceholderFile placeholderFile;
+	private static final String DEFAULT_TEMPLATE_FILE = "template.json";
+	private static final String DEFAULT_PLACEHOLDER_FILE = "placeholders.json";
+
+	// json config field
+	private String templateFile = DEFAULT_TEMPLATE_FILE;
+	private String placeholderFile = DEFAULT_PLACEHOLDER_FILE;
 	private int weighting = 1;
 
+	private transient PlaceholderParser parser;
 	private transient BsonDocument referenceDocument;
 	private transient Integer documentSize;
 
-	public final String getTemplateFile() {
-		return templateFile;
+	public Template(String templateFile, String placeholderFile) {
+		if (templateFile != null) {
+			this.templateFile = templateFile;
+		}
+		if (placeholderFile != null) {
+			this.placeholderFile = placeholderFile;
+		}
+		this.initialise();
+	}
+
+	public Template() {
+
 	}
 
 	public final int getWeighting() {
@@ -45,13 +61,14 @@ public class Template extends Config {
 		this.documentSize = documentSize;
 	}
 
-	public PlaceholderFile getPlaceholderFile() {
-		return placeholderFile;
+	public PlaceholderParser getPlaceholderFile() {
+		return parser;
 	}
 
 	@Override
 	public void initialise() {
 		Path templatePath = FileUtil.resolveFile(templateFile);
+		this.parser = PlaceholderParserFactory.getInstance().loadFromFile(placeholderFile);
 
 		try {
 			referenceDocument = BsonDocument.parse(new String(Files.readAllBytes(templatePath)));
@@ -60,8 +77,6 @@ public class Template extends Config {
 			logger.error("Could not parse template file {}", templatePath);
 			throw new RuntimeException(e);
 		}
-
-		//PlaceholderFactory.getInstance().loadFromFile(placeholderFile);
 	}
 
 	public boolean hasId() {
@@ -70,6 +85,10 @@ public class Template extends Config {
 
 	@Override
 	protected void executeInternal() {
+	}
+
+	public static Template getDefault() {
+		return new Template(DEFAULT_TEMPLATE_FILE, DEFAULT_PLACEHOLDER_FILE);
 	}
 
 }

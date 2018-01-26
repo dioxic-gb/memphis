@@ -14,7 +14,7 @@ import com.mongodb.memphis.config.Template;
 import com.mongodb.memphis.engine.DocumentPool.Batch;
 import com.mongodb.memphis.placeholder.Placeholder;
 import com.mongodb.memphis.placeholder.Placeholder.Scope;
-import com.mongodb.memphis.placeholder.PlaceholderFile;
+import com.mongodb.memphis.placeholder.PlaceholderParser;
 import com.mongodb.memphis.placeholder.location.PlaceholderLocation;
 
 public class EngineDocument {
@@ -24,7 +24,7 @@ public class EngineDocument {
 	private List<PlaceholderLocation> placeholderLocations;
 
 	public EngineDocument(Template template) {
-		PlaceholderFile parser = template.getPlaceholderFile();
+		PlaceholderParser parser = template.getPlaceholderFile();
 		this.document = template.getReferenceDocument().clone();
 		this.template = template;
 		this.placeholderLocations = parser.parseDocument(document);

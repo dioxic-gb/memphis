@@ -11,6 +11,7 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mongodb.memphis.config.Filter;
 import com.mongodb.memphis.config.Root;
 
 public class CommandLineOptions {
@@ -19,6 +20,7 @@ public class CommandLineOptions {
 	private String configFile;
 	private boolean debug;
 	private boolean trace;
+	private Filter filter;
 
 	public CommandLineOptions(String[] args) throws ParseException {
 		logger = LoggerFactory.getLogger(CommandLineOptions.class);
@@ -31,8 +33,11 @@ public class CommandLineOptions {
 
 		cliopt.addOption("h", "help", false, "Show Help");
 		cliopt.addOption("c", "config", true, "config file");
-		cliopt.addOption("d", "debug", false, "debug outputs");
-		cliopt.addOption("t", "trace", false, "trace outputs");
+		cliopt.addOption("D", "debug", false, "debug outputs");
+		cliopt.addOption("T", "trace", false, "trace outputs");
+		cliopt.addOption("t", "test", true, "test filter");
+		cliopt.addOption("s", "stage", true, "stage filter");
+		cliopt.addOption("o", "operation", true, "operation filter");
 
 		CommandLine cmd = parser.parse(cliopt, args);
 
@@ -49,13 +54,16 @@ public class CommandLineOptions {
 			System.exit(0);
 		}
 
-		if (cmd.hasOption("d")) {
+		if (cmd.hasOption("D")) {
 			debug = true;
 		}
 
-		if (cmd.hasOption("t")) {
+		if (cmd.hasOption("T")) {
 			trace = true;
 		}
+
+		filter = new Filter(cmd.getOptionValue("t"), cmd.getOptionValue("s"), cmd.getOptionValue("o"));
+
 	}
 
 	public boolean isDebug() {
@@ -67,7 +75,9 @@ public class CommandLineOptions {
 	}
 
 	public Root getConfig() throws IOException {
-		return Root.loadFromFile(configFile);
+		Root root = Root.loadFromFile(configFile);
+		root.setFilter(filter);
+		return root;
 	}
 
 }
