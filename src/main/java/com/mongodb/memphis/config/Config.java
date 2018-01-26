@@ -51,7 +51,7 @@ public abstract class Config {
 		this.depth = depth;
 		if (getChildren() != null) {
 			for (Config child : getChildren()) {
-				child.initialiseHierarchy(this, depth+1);
+				child.initialiseHierarchy(this, depth + 1);
 			}
 		}
 	}
@@ -69,17 +69,15 @@ public abstract class Config {
 	}
 
 	public final void execute() {
-		info("{} {} starting", getClass().getSimpleName(), getName());
-
-		long startTime = System.currentTimeMillis();
-
 		if (!disabled && getFilter().accept(this)) {
+			info("{} {} starting", getClass().getSimpleName(), getName());
+
+			long startTime = System.currentTimeMillis();
 			executeInternal();
+			long totalTime = System.currentTimeMillis() - startTime;
+
+			info("{} {} completed in {}", getClass().getSimpleName(), getName(), StringUtils.prettifyTime(totalTime));
 		}
-
-		long totalTime = System.currentTimeMillis() - startTime;
-
-		info("{} {} completed in {}", getClass().getSimpleName(), getName(), StringUtils.prettifyTime(totalTime));
 	}
 
 	protected void info(String format, Object... arguements) {
@@ -87,7 +85,7 @@ public abstract class Config {
 	}
 
 	private String indent(String s) {
-		for (int i=0; i<depth; i++) {
+		for (int i = 0; i < depth; i++) {
 			s = "  " + s;
 		}
 		return s;
